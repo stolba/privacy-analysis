@@ -11,6 +11,6 @@ Code for the "Privacy Leakage of Search-based Multi-Agent Planning Algorithms" p
 2. open leakage_v2_simple.ipnb to analyze example traces
 
 # creating new traces
-* You can checkout and build the MAPlan planner branch TODO which outputs the traces and run it using the included bash scripts.
+* You can checkout and build the MAPlan planner from https://gitlab.com/danfis/maplan.git branch icaps19-privacy-leakage-priv-id-quantification which is modified to output the search traces. You can run it using the included bash scripts (you will need to modify the paths in run_maplan.sh.
 * You can modify your planner to output traces in JSON format according to the example traces in traces/uav/p01/1.
 
