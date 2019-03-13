@@ -1,0 +1,36 @@
+{
+
+"variables":[
+{"agentID":1,"varID":0,"varName":"var0","isPrivate":false,"range":2,"vals": {"0":"mission-complete()","1":"(N)mission-complete()"}},
+{"agentID":1,"varID":1,"varName":"var1","isPrivate":false,"range":2,"vals": {"0":"uav-has-fuel()","1":"(N)uav-has-fuel()"}},
+{"agentID":1,"varID":2,"varName":"var2","isPrivate":true,"range":2,"vals": {"0":"(P)location-complete(l1)","1":"(N)location-complete(l1)"}},
+{"agentID":1,"varID":3,"varName":"var3","isPrivate":true,"range":2,"vals": {"0":"(P)location-complete(l2)","1":"(N)location-complete(l2)"}}
+],
+
+"operators":[
+{"agentID":1,"ownerID":0,"opName":"refuel ","isPrivate":false,"opID":0,"cost":1,"pre": {"1":1},"eff": {"1":0}},
+{"agentID":1,"ownerID":0,"opName":"refuel-and-resuply ","isPrivate":false,"opID":1,"cost":1,"pre": {"1":1},"eff": {"1":0}},
+{"agentID":1,"ownerID":1,"opName":"complete-mission ","isPrivate":false,"opID":2,"cost":1,"pre": {"0":1,"2":0,"3":0},"eff": {"0":0}},
+{"agentID":1,"ownerID":1,"opName":"survey-location l1","isPrivate":false,"opID":3,"cost":1,"pre": {"1":0,"2":1},"eff": {"1":1,"2":0}},
+{"agentID":1,"ownerID":1,"opName":"survey-location l2","isPrivate":false,"opID":4,"cost":1,"pre": {"1":0,"3":1},"eff": {"1":1,"3":0}}
+],
+
+"states":[
+{"agentID":1,"senderID":-1,"stateID":0,"parentID":-1,"iparentID":-1,"cost":0,"heuristic":-1,"privateIDs": [0,0],"values": [1,1,1,1],"context":"init"},
+{"agentID":1,"senderID":0,"stateID":1,"parentID":-1,"iparentID":0,"cost":1,"heuristic":1,"privateIDs": [1,0],"values": [1,0,1,1],"context":"received"},
+{"agentID":1,"senderID":-1,"stateID":2,"parentID":1,"iparentID":-1,"cost":2,"heuristic":3,"privateIDs": [1,1],"values": [1,1,0,1],"context":"sending"},
+{"agentID":1,"senderID":-1,"stateID":3,"parentID":1,"iparentID":-1,"cost":2,"heuristic":3,"privateIDs": [1,2],"values": [1,1,1,0],"context":"sending"},
+{"agentID":1,"senderID":0,"stateID":4,"parentID":-1,"iparentID":2,"cost":3,"heuristic":1,"privateIDs": [0,1],"values": [1,0,0,1],"context":"received"},
+{"agentID":1,"senderID":0,"stateID":6,"parentID":-1,"iparentID":3,"cost":3,"heuristic":1,"privateIDs": [0,2],"values": [1,0,1,0],"context":"received"},
+{"agentID":1,"senderID":-1,"stateID":5,"parentID":4,"iparentID":-1,"cost":4,"heuristic":1,"privateIDs": [0,3],"values": [1,1,0,0],"context":"sending"},
+{"agentID":1,"senderID":1,"stateID":7,"parentID":5,"iparentID":-1,"cost":5,"heuristic":0,"privateIDs": [0,3],"values": [0,1,0,0],"context":"goal-verified"}
+],
+
+"plan":[
+"refuel-and-resuply ",
+"survey-location l1",
+"refuel ",
+"survey-location l2",
+"complete-mission "
+]
+}

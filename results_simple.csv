@@ -1,0 +1,2 @@
+domain,problem,agent,privateActions,useStateIDs,nTo1Mapping,SecureMAFS,projectedHeuristic,receivedStates,nia,ia,pi,pd,pn,apriori,post,leakage,gt_ia,gt_pi,gt_pd,gt_pn,gt_post,gt_leakage,ratio,correct
+uav,p01,0,False,False,1,False,False,3,0,1,1,0,0,3.5849625007,3.169925,0.4150375007,1,1,0,1,2.8073549221,0.7776075786000001,0.5337364399755864,True
