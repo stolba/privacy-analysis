@@ -2,9 +2,10 @@
 Code for the "Privacy Leakage of Search-based Multi-Agent Planning Algorithms" paper to appear at ICAPS 2019. Relevant papers are stored in the doc folder.
 
 # requirements
-* python3 with pulp
-* graphviz for vizualization
-* jupyter notebook/lab to open the interactive .ipnb files
+* python3 with pulp for LP computation
+* graphviz for vizualization (optional)
+* jupyter notebook/lab to open the interactive .ipnb files (optional, the pure python scripts can be run without it)
+* sympy to compute and cache the number of transition systems (optional)
 
 # running
 1. install dependencies
