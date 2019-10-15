@@ -8,7 +8,7 @@ public class PrivacyAnalysisOffline {
 	public static void main(String[] args) {
 		
 		//TODO: read the analyzed agent ID from cmd
-		SearchTree tree = new SearchTree(0);
+		SearchTree tree = new SearchTree(1);
 		
 		
 		InputJSONReader reader = new InputJSONReader();
