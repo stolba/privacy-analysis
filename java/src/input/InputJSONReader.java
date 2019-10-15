@@ -63,6 +63,8 @@ public class InputJSONReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		tree.afterAllStatesProcessed();
 	}
 	
 	

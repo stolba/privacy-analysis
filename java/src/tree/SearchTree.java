@@ -89,9 +89,9 @@ public class SearchTree {
 			}
 			previousReceivedState = state;
 		}
-		
-		
-		
+	}
+	
+	public void afterAllStatesProcessed(){
 		
 	}
 	
