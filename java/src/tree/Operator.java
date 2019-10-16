@@ -32,4 +32,31 @@ public class Operator {
 		}
 		return true;
 	}
+	
+	
+	public boolean applicable(SearchState state){
+		for(int i = 0; i < preMask.length; i++){
+			if(preMask[i] != SearchState.UNDEFINED_VALUE){
+				if(state.values[i] != preMask[i]) return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean matchEffects(SearchState state){
+		for(int i = 0; i < preMask.length; i++){
+			if(effMask[i] != SearchState.UNDEFINED_VALUE){
+				if(state.values[i] != effMask[i]) return false;
+			}
+		}
+		return true;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Operator [opName=" + opName + "]";
+	}
+	
+	
 }

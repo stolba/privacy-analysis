@@ -1,8 +1,14 @@
 package tree;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import analysis.OperatorSet;
+import detector.PrivatelyDependentDetector;
 
 public class SearchTree {
 	
@@ -16,6 +22,11 @@ public class SearchTree {
 	private int numOfPublicVariables = 0;
 	
 	private SearchState previousReceivedState = null;
+	
+	private Set<OperatorSet> operatorPropertiesSet = new HashSet<>();
+	
+	
+	private PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
 	
 	
 	
@@ -31,8 +42,8 @@ public class SearchTree {
 	}
 	
 	public void addOperator(Operator op){
-		// We are interested in projected operators o
-		if(analyzedAgentID == op.ownerID) return;
+		// We are interested in projected operators of analyzedAgentID
+		if(analyzedAgentID != op.ownerID) return;
 		opMap.put(op.opID, op);
 		
 		op.preMask = new int[numOfPublicVariables];
@@ -71,6 +82,9 @@ public class SearchTree {
 			receivedStateMap.put(state.stateID, state);
 			
 			SearchState iparent = sentStateMap.get(state.iparentID);
+			
+			iparent.successors.add(state);
+			
 			//find all possibly responsible operators
 			for(Operator op : opMap.values()){
 //				System.out.println("match " + op.opName + ":"+Arrays.toString(op.preMask)+ "->"+Arrays.toString(op.effMask)+" on "+ Arrays.toString(iparent.values)+" --> "+ Arrays.toString(state.values)+"?");
@@ -86,6 +100,11 @@ public class SearchTree {
 			if(previousReceivedState !=null && previousReceivedState.iparentID != state.iparentID){
 				sentStateMap.get(previousReceivedState.iparentID).allSuccessorsReceived = true;
 				System.out.println("all successors of state "+previousReceivedState.iparentID+" received");
+				
+				OperatorSet os = pdDetector.detectProperty(this, previousReceivedState);
+				if(!os.isEmpty()){
+					operatorPropertiesSet.add(os);
+				}
 			}
 			previousReceivedState = state;
 		}
@@ -95,4 +114,20 @@ public class SearchTree {
 		
 	}
 	
+	
+	public Collection<Operator> getAllOperators(){
+		return opMap.values();
+	}
+	
+	public Map<Integer,SearchState> getSentStateMap(){
+		return sentStateMap;
+	}
+	
+	public Map<Integer,SearchState> getReceivedStateMap(){
+		return receivedStateMap;
+	}
+	
+	public Set<OperatorSet> getOperatorPropertiesSet(){
+		return operatorPropertiesSet;
+	}
 }

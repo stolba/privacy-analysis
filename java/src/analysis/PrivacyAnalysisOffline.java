@@ -13,6 +13,12 @@ public class PrivacyAnalysisOffline {
 		
 		InputJSONReader reader = new InputJSONReader();
 		reader.readJSONFileOffline(args[0],tree);
+		
+		
+		for(OperatorSet os : tree.getOperatorPropertiesSet()){
+			System.out.println("operators "+os.privacyProperty+": " + os);
+			
+		}
 
 	}
 
