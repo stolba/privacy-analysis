@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.Set;
 
 import analysis.OperatorSet;
+import detector.InitApplicableDetector;
 import detector.PrivatelyDependentDetector;
 
 public class SearchTree {
 	
-	private final int analyzedAgentID;
+	public final int analyzedAgentID;
 
 	private Map<Integer,Variable> varMap = new HashMap<>();
 	private Map<Integer,Operator> opMap = new HashMap<>();
@@ -27,6 +28,7 @@ public class SearchTree {
 	
 	
 	private PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
+	private InitApplicableDetector iaDetector = new InitApplicableDetector();
 	
 	
 	
@@ -95,18 +97,24 @@ public class SearchTree {
 				
 			}
 			
+			addOpSet(iaDetector.detectProperty(this, state));
+			
 			//detect whether all successors of the current i-parent were received
 			//TODO: this has to be turned off when not using GBFS
 			if(previousReceivedState !=null && previousReceivedState.iparentID != state.iparentID){
-				sentStateMap.get(previousReceivedState.iparentID).allSuccessorsReceived = true;
-				System.out.println("all successors of state "+previousReceivedState.iparentID+" received");
+				SearchState stateWithAllSuccessorsReceived = sentStateMap.get(previousReceivedState.iparentID);
+				stateWithAllSuccessorsReceived.allSuccessorsReceived = true;
+				System.out.println("all successors of state "+stateWithAllSuccessorsReceived+" received");
 				
-				OperatorSet os = pdDetector.detectProperty(this, previousReceivedState);
-				if(!os.isEmpty()){
-					operatorPropertiesSet.add(os);
-				}
+				addOpSet(pdDetector.detectProperty(this, stateWithAllSuccessorsReceived));
 			}
 			previousReceivedState = state;
+		}
+	}
+	
+	private void addOpSet(OperatorSet os){
+		if(!os.isEmpty()){
+			operatorPropertiesSet.add(os);
 		}
 	}
 	

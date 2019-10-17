@@ -34,7 +34,7 @@ public class SearchState {
 		return "SearchState [agentID=" + agentID + ", senderID=" + senderID
 				+ ", stateID=" + stateID + ", iparentID=" + iparentID
 				+ ", values=" + Arrays.toString(values) + ", context="
-				+ context + "]";
+				+ context +", allSuccessorsReceived="+allSuccessorsReceived+ "]";
 	}
 	
 	
