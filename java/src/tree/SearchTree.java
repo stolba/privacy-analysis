@@ -10,6 +10,8 @@ import java.util.Set;
 import analysis.OperatorSet;
 import detector.InitApplicableDetector;
 import detector.PrivatelyDependentDetector;
+import detector.PrivatelyDifferentStateDetectorInterface;
+import detector.PrivatelyIndependentDetector;
 
 public class SearchTree {
 	
@@ -20,7 +22,6 @@ public class SearchTree {
 	private Map<Integer,SearchState> sentStateMap = new HashMap<>();
 	private Map<Integer,SearchState> receivedStateMap = new HashMap<>();
 	
-	private int numOfPublicVariables = 0;
 	
 	private SearchState previousReceivedState = null;
 	
@@ -29,18 +30,21 @@ public class SearchTree {
 	
 	private PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
 	private InitApplicableDetector iaDetector = new InitApplicableDetector();
+	private PrivatelyIndependentDetector piDetector;
 	
 	
 	
-	public SearchTree(int analyzedAgentID) {
+	public SearchTree(int analyzedAgentID,Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
 		super();
 		this.analyzedAgentID = analyzedAgentID;
+		
+		piDetector = new PrivatelyIndependentDetector(privatelyDifferentStateDetectors);
 	}
 
 	public void addVariable(Variable var){
 		varMap.put(var.varID, var);
 		
-		if(!var.isPrivate) ++numOfPublicVariables;
+		if(!var.isPrivate) ++SearchState.numOfPublicVariables;
 	}
 	
 	public void addOperator(Operator op){
@@ -48,10 +52,10 @@ public class SearchTree {
 		if(analyzedAgentID != op.ownerID) return;
 		opMap.put(op.opID, op);
 		
-		op.preMask = new int[numOfPublicVariables];
-		op.effMask = new int[numOfPublicVariables];
+		op.preMask = new int[SearchState.numOfPublicVariables];
+		op.effMask = new int[SearchState.numOfPublicVariables];
 		
-		for(int var = 0; var < numOfPublicVariables; var++){
+		for(int var = 0; var < SearchState.numOfPublicVariables; var++){
 			Integer val = op.pre.get(Integer.toString(var));
 			if(val != null){
 				op.preMask[var] = val;
@@ -99,6 +103,8 @@ public class SearchTree {
 			
 			addOpSet(iaDetector.detectProperty(this, state));
 			
+			addOpSet(piDetector.detectProperty(this, state));
+			
 			//detect whether all successors of the current i-parent were received
 			//TODO: this has to be turned off when not using GBFS
 			if(previousReceivedState !=null && previousReceivedState.iparentID != state.iparentID){
@@ -121,6 +127,7 @@ public class SearchTree {
 	public void afterAllStatesProcessed(){
 		
 	}
+	
 	
 	
 	public Collection<Operator> getAllOperators(){

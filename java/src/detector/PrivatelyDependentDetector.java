@@ -1,8 +1,5 @@
 package detector;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import tree.Operator;
 import tree.SearchState;
 import tree.SearchTree;
