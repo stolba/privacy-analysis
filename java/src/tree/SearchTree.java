@@ -12,7 +12,9 @@ import detector.InitApplicableDetector;
 import detector.PrivatelyDependentDetector;
 import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.PrivatelyIndependentDetector;
+import detector.PrivatelyNondeterministicDetector;
 
+//TODO: it is probably good idea to disentangle the search tree structure and its creation from the actual analysis algorithm. The online approach if viable at all can be done using the building primitives
 public class SearchTree {
 	
 	public final int analyzedAgentID;
@@ -31,6 +33,7 @@ public class SearchTree {
 	private PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
 	private InitApplicableDetector iaDetector = new InitApplicableDetector();
 	private PrivatelyIndependentDetector piDetector;
+	private PrivatelyNondeterministicDetector noDetector = new PrivatelyNondeterministicDetector();
 	
 	
 	
@@ -47,6 +50,8 @@ public class SearchTree {
 		if(!var.isPrivate) ++SearchState.numOfPublicVariables;
 	}
 	
+	
+	//TODO: I need to create label-non-preserving projection!
 	public void addOperator(Operator op){
 		// We are interested in projected operators of analyzedAgentID
 		if(analyzedAgentID != op.ownerID) return;
@@ -104,6 +109,8 @@ public class SearchTree {
 			addOpSet(iaDetector.detectProperty(this, state));
 			
 			addOpSet(piDetector.detectProperty(this, state));
+			
+			addOpSet(noDetector.detectProperty(this, iparent));
 			
 			//detect whether all successors of the current i-parent were received
 			//TODO: this has to be turned off when not using GBFS

@@ -21,7 +21,7 @@ public class PrivatelyIndependentDetector implements PropertyDetectorInterface {
 
 	@Override
 	public OperatorSet detectProperty(SearchTree tree, SearchState relevantState) {
-		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_INDEPENDENT,true);
+		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_INDEPENDENT,false);
 		
 		SearchState iparent = tree.getSentStateMap().get(relevantState.iparentID);
 		
