@@ -55,7 +55,7 @@ public class SearchTree {
 	public void addOperator(Operator op){
 		// We are interested in projected operators of analyzedAgentID
 		if(analyzedAgentID != op.ownerID) return;
-		opMap.put(op.opID, op);
+		
 		
 		op.preMask = new int[SearchState.numOfPublicVariables];
 		op.effMask = new int[SearchState.numOfPublicVariables];
@@ -75,6 +75,26 @@ public class SearchTree {
 				op.effMask[var] = SearchState.UNDEFINED_VALUE;
 			}
 		}
+		
+		op.label = Arrays.toString(op.preMask)+ "->"+Arrays.toString(op.effMask);
+		op.hash = op.label.hashCode();
+		
+		if(opMap.containsKey(op.hash)){
+			String existingName = opMap.get(op.hash).opName;
+			
+			String newName = "";
+			
+			for(int i = 0; i < Math.min(existingName.length(), op.opName.length()); i++){
+				if(existingName.charAt(i) == op.opName.charAt(i) && existingName.charAt(i) != ' '){
+					newName += existingName.charAt(i);
+				}else{
+					break;
+				}
+			}
+			
+			op.opName = newName;
+		}
+		opMap.put(op.hash, op);
 		
 		System.out.println("op " + op.opName + " preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
 		

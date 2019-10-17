@@ -15,6 +15,9 @@ public class Operator {
 	public Map<String,Integer> pre;
 	public Map<String,Integer> eff;
 	
+	public String label;
+	public int hash;
+	
 	public int[] preMask;
 	public int[] effMask;
 	
