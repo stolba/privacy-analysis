@@ -125,9 +125,11 @@ public class SearchTree {
 		}
 	}
 	
-	private void addOpSet(OperatorSet os){
-		if(!os.isEmpty()){
-			operatorPropertiesSet.add(os);
+	private void addOpSet(Set<OperatorSet> osSet){
+		for(OperatorSet os : osSet){
+			if(!os.isEmpty()){
+				operatorPropertiesSet.add(os);
+			}
 		}
 	}
 	

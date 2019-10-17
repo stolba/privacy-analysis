@@ -1,6 +1,8 @@
 package detector;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import tree.SearchState;
 import tree.SearchTree;
@@ -20,26 +22,27 @@ public class PrivatelyIndependentDetector implements PropertyDetectorInterface {
 	}
 
 	@Override
-	public OperatorSet detectProperty(SearchTree tree, SearchState relevantState) {
-		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_INDEPENDENT,false);
+	public Set<OperatorSet> detectProperty(SearchTree tree, SearchState relevantState) {
+		Set<OperatorSet> result =  new HashSet<OperatorSet>();
+		
 		
 		SearchState iparent = tree.getSentStateMap().get(relevantState.iparentID);
 		
 		for(SearchState s : tree.getSentStateMap().values()){
 			if(iparent.publiclyEquivalent(s)){
 				if(iparent.privatelyDifferent(s, privatelyDifferentStateDetectors)){
+					OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_INDEPENDENT,false);
 					opSet.addAll(relevantState.responsibleOperators);
 					opSet.retainAll(s.responsibleOperators);
 					
-					//TODO: we will need to retur ALL non-empty sets, not just the first one!
 					if(!opSet.isEmpty()){
-						return opSet;
+						result.add(opSet);
 					}
 				}
 			}
 		}
 		
-		return opSet;
+		return result;
 	}
 
 	@Override
