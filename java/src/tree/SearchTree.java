@@ -9,10 +9,12 @@ import java.util.Set;
 
 import analysis.OperatorSet;
 import detector.InitApplicableDetector;
+import detector.NotInitApplicableDetector;
 import detector.PrivatelyDependentDetector;
 import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.PrivatelyIndependentDetector;
 import detector.PrivatelyNondeterministicDetector;
+import detector.PubliclyDeterministicDetector;
 
 //TODO: it is probably good idea to disentangle the search tree structure and its creation from the actual analysis algorithm. The online approach if viable at all can be done using the building primitives
 public class SearchTree {
@@ -34,6 +36,8 @@ public class SearchTree {
 	private InitApplicableDetector iaDetector = new InitApplicableDetector();
 	private PrivatelyIndependentDetector piDetector;
 	private PrivatelyNondeterministicDetector noDetector = new PrivatelyNondeterministicDetector();
+	private NotInitApplicableDetector niaDetector = new NotInitApplicableDetector();
+	private PubliclyDeterministicDetector deDetector;
 	
 	
 	
@@ -42,6 +46,7 @@ public class SearchTree {
 		this.analyzedAgentID = analyzedAgentID;
 		
 		piDetector = new PrivatelyIndependentDetector(privatelyDifferentStateDetectors);
+		deDetector = new PubliclyDeterministicDetector(privatelyDifferentStateDetectors);
 	}
 
 	public void addVariable(Variable var){
@@ -154,7 +159,8 @@ public class SearchTree {
 	}
 	
 	public void afterAllStatesProcessed(){
-		
+		addOpSet(niaDetector.detectProperty(this, null));
+		addOpSet(deDetector.detectProperty(this, null));
 	}
 	
 	
