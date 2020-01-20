@@ -39,8 +39,7 @@ public class NotInitApplicableDetector implements PropertyDetectorInterface {
 
 	@Override
 	public EnumPrivacyProperty getPrivacyProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		return EnumPrivacyProperty.NOT_INIT_APPLICABLE;
 	}
 
 	@Override
@@ -48,5 +47,12 @@ public class NotInitApplicableDetector implements PropertyDetectorInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean isGroundTruthProperty(Operator op, Set<String> privatePropertyIDs) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
 
 }

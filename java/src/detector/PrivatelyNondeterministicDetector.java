@@ -3,6 +3,7 @@ package detector;
 import java.util.HashSet;
 import java.util.Set;
 
+import tree.Operator;
 import tree.SearchState;
 import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
@@ -37,14 +38,34 @@ public class PrivatelyNondeterministicDetector implements
 
 	@Override
 	public EnumPrivacyProperty getPrivacyProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC;
 	}
 
 	@Override
 	public boolean isApplicableOnline() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
+		//find a private variable for which there is more than one effect value 
+		for(String var : privateVarIDs){
+			Set<Integer> opValues = new HashSet<>();
+			
+			for(Operator origOp : op.getOriginalOps()){
+				if(origOp.eff.containsKey(var)) opValues.add(origOp.eff.get(var));
+			}
+			
+			if(opValues.size() > 1 ){
+				System.out.println("GT op " + op.opName + " is privately-deterministic in " + var);
+				return true;
+			}
+			
+		}
+		return false;
+		
 	}
 
 }

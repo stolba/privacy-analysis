@@ -1,5 +1,7 @@
 package tree;
 
+import input.SearchTraceInputInterface;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,10 +16,10 @@ import detector.PrivatelyDependentDetector;
 import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.PrivatelyIndependentDetector;
 import detector.PrivatelyNondeterministicDetector;
-import detector.PubliclyDeterministicDetector;
+import detector.PrivatelyDeterministicDetector;
 
 //TODO: it is probably good idea to disentangle the search tree structure and its creation from the actual analysis algorithm. The online approach if viable at all can be done using the building primitives
-public class SearchTree {
+public class SearchTree implements SearchTraceInputInterface{
 	
 	public final int analyzedAgentID;
 
@@ -32,12 +34,12 @@ public class SearchTree {
 	private Set<OperatorSet> operatorPropertiesSet = new HashSet<>();
 	
 	
-	private PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
-	private InitApplicableDetector iaDetector = new InitApplicableDetector();
-	private PrivatelyIndependentDetector piDetector;
-	private PrivatelyNondeterministicDetector noDetector = new PrivatelyNondeterministicDetector();
-	private NotInitApplicableDetector niaDetector = new NotInitApplicableDetector();
-	private PubliclyDeterministicDetector deDetector;
+	public PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
+	public InitApplicableDetector iaDetector = new InitApplicableDetector();
+	public PrivatelyIndependentDetector piDetector;
+	public PrivatelyNondeterministicDetector noDetector = new PrivatelyNondeterministicDetector();
+	public NotInitApplicableDetector niaDetector = new NotInitApplicableDetector();
+	public PrivatelyDeterministicDetector deDetector;
 	
 	
 	
@@ -46,9 +48,10 @@ public class SearchTree {
 		this.analyzedAgentID = analyzedAgentID;
 		
 		piDetector = new PrivatelyIndependentDetector(privatelyDifferentStateDetectors);
-		deDetector = new PubliclyDeterministicDetector(privatelyDifferentStateDetectors);
+		deDetector = new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors);
 	}
 
+	@Override
 	public void addVariable(Variable var){
 		varMap.put(var.varID, var);
 		
@@ -56,55 +59,31 @@ public class SearchTree {
 	}
 	
 	
-	//TODO: I need to create label-non-preserving projection!
+	@Override
 	public void addOperator(Operator op){
 		// We are interested in projected operators of analyzedAgentID
 		if(analyzedAgentID != op.ownerID) return;
 		
 		
-		op.preMask = new int[SearchState.numOfPublicVariables];
-		op.effMask = new int[SearchState.numOfPublicVariables];
-		
-		for(int var = 0; var < SearchState.numOfPublicVariables; var++){
-			Integer val = op.pre.get(Integer.toString(var));
-			if(val != null){
-				op.preMask[var] = val;
-			}else{
-				op.preMask[var] = SearchState.UNDEFINED_VALUE;
-			}
-			
-			val = op.eff.get(Integer.toString(var));
-			if(val != null){
-				op.effMask[var] = val;
-			}else{
-				op.effMask[var] = SearchState.UNDEFINED_VALUE;
-			}
-		}
-		
-		op.label = Arrays.toString(op.preMask)+ "->"+Arrays.toString(op.effMask);
-		op.hash = op.label.hashCode();
+		op.generatePublicLabelAndHash();
 		
 		if(opMap.containsKey(op.hash)){
-			String existingName = opMap.get(op.hash).opName;
+			Operator existingOp = opMap.get(op.hash);
 			
-			String newName = "";
+			existingOp.addOriginalOp(op);
 			
-			for(int i = 0; i < Math.min(existingName.length(), op.opName.length()); i++){
-				if(existingName.charAt(i) == op.opName.charAt(i) && existingName.charAt(i) != ' '){
-					newName += existingName.charAt(i);
-				}else{
-					break;
-				}
-			}
+			System.out.println("op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
 			
-			op.opName = newName;
+		}else{
+			opMap.put(op.hash, op);
+			System.out.println("op " + op.opName + " preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
 		}
-		opMap.put(op.hash, op);
 		
-		System.out.println("op " + op.opName + " preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
+		
 		
 	}
 	
+	@Override
 	public void addStateSequential(SearchState state){
 		//TODO: we need to retain the order somehow
 		//TODO: we'll probably do all the processing here
@@ -158,6 +137,7 @@ public class SearchTree {
 		}
 	}
 	
+	@Override
 	public void afterAllStatesProcessed(){
 		addOpSet(niaDetector.detectProperty(this, null));
 		addOpSet(deDetector.detectProperty(this, null));
@@ -179,5 +159,17 @@ public class SearchTree {
 	
 	public Set<OperatorSet> getOperatorPropertiesSet(){
 		return operatorPropertiesSet;
+	}
+
+	@Override
+	public void afterAllVariablesProcessed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void afterAllOperatorsProcessed() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -10,13 +10,13 @@ import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
-public class PubliclyDeterministicDetector implements PropertyDetectorInterface {
+public class PrivatelyDeterministicDetector implements PropertyDetectorInterface {
 	
 	private final Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors;
 	
 	
 
-	public PubliclyDeterministicDetector(
+	public PrivatelyDeterministicDetector(
 			Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
 		super();
 		this.privatelyDifferentStateDetectors = privatelyDifferentStateDetectors;
@@ -56,14 +56,34 @@ public class PubliclyDeterministicDetector implements PropertyDetectorInterface 
 
 	@Override
 	public EnumPrivacyProperty getPrivacyProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return EnumPrivacyProperty.PRIVATELY_DETERMINISTIC;
 	}
 
 	@Override
 	public boolean isApplicableOnline() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
+		//find a private variable for which there is exactly one effect value 
+		for(String var : privateVarIDs){
+			Set<Integer> opValues = new HashSet<>();
+			
+			for(Operator origOp : op.getOriginalOps()){
+				if(origOp.eff.containsKey(var)) opValues.add(origOp.eff.get(var));
+			}
+			
+			if(opValues.size() == 1 ){
+				System.out.println("GT op " + op.opName + " is privately-deterministic in " + var);
+				return true;
+			}
+			
+		}
+		return false;
+		
 	}
 
 }

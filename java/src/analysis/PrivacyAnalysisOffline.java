@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tree.SearchTree;
+import validate.OperatorPropertyValidator;
 import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.ProjectedHeuristicPrivatelyDifferentDetector;
+import detector.PropertyDetectorInterface;
 
 public class PrivacyAnalysisOffline {
 
@@ -19,7 +21,8 @@ public class PrivacyAnalysisOffline {
 		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector());
 		
 		//TODO: read the analyzed agent ID from cmd
-		SearchTree tree = new SearchTree(1,privatelyDifferentStateDetectors);
+		int analyzedAgentID = 1;
+		SearchTree tree = new SearchTree(analyzedAgentID,privatelyDifferentStateDetectors);
 		
 		//TODO: we are going to need to read al the files for all adversary agents which will most probably prevent the Online processing anyway!
 		InputJSONReader reader = new InputJSONReader();
@@ -30,6 +33,26 @@ public class PrivacyAnalysisOffline {
 			System.out.println("operators "+os.privacyProperty+": " + os);
 			
 		}
+		
+		//validation
+		System.out.println("read for validation...");
+		reader = new InputJSONReader();
+		OperatorPropertyValidator validator = new OperatorPropertyValidator(analyzedAgentID);
+		
+		//TODO: this could be done better
+		validator.addPropertyDetector(tree.deDetector);
+		validator.addPropertyDetector(tree.iaDetector);
+		validator.addPropertyDetector(tree.niaDetector);
+		validator.addPropertyDetector(tree.noDetector);
+		validator.addPropertyDetector(tree.pdDetector);
+		validator.addPropertyDetector(tree.piDetector);
+		
+		reader.readJSONFileOffline(args[1],validator);
+		
+		System.out.println("validate...");
+		
+		
+		validator.validateOperators(tree.getOperatorPropertiesSet());
 
 	}
 

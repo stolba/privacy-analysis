@@ -3,6 +3,7 @@ package detector;
 import java.util.HashSet;
 import java.util.Set;
 
+import tree.Operator;
 import tree.SearchState;
 import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
@@ -28,6 +29,12 @@ public class InitApplicableDetector implements PropertyDetectorInterface {
 
 	@Override
 	public boolean isApplicableOnline() {
+		return true;
+	}
+
+	@Override
+	public boolean isGroundTruthProperty(Operator op, Set<String> privatePropertyIDs) {
+		// TODO Auto-generated method stub
 		return true;
 	}
 

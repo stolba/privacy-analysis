@@ -24,7 +24,8 @@ public class InputJSONReader {
 			
 	}
 	
-	ReadingState readingState = ReadingState.NONE;
+	private ReadingState readingState = ReadingState.NONE;
+	private SearchTraceInputInterface searchTraceProcessor;
 	
 	
 	public Map<Integer,Variable> varMap = new HashMap<>();
@@ -33,8 +34,12 @@ public class InputJSONReader {
 	
 	
 	
-	public void readJSONFileOffline(String filename, SearchTree tree){
+	
+	
+	public void readJSONFileOffline(String filename, SearchTraceInputInterface searchTraceProcessor){
+		this.searchTraceProcessor = searchTraceProcessor;
 		BufferedReader reader;
+		
 		try {
 			reader = new BufferedReader(new FileReader(filename));
 			String line = reader.readLine();
@@ -44,15 +49,15 @@ public class InputJSONReader {
 				
 				if(readObj != null){
 					if(readObj instanceof Variable){
-						tree.addVariable((Variable)readObj);
+						searchTraceProcessor.addVariable((Variable)readObj);
 						
 					}
 					if(readObj instanceof Operator){
-						tree.addOperator((Operator)readObj);
+						searchTraceProcessor.addOperator((Operator)readObj);
 						
 					}
 					if(readObj instanceof SearchState){
-						tree.addStateSequential((SearchState)readObj);
+						searchTraceProcessor.addStateSequential((SearchState)readObj);
 						
 					}
 				}
@@ -64,7 +69,7 @@ public class InputJSONReader {
 			e.printStackTrace();
 		}
 		
-		tree.afterAllStatesProcessed();
+		searchTraceProcessor.afterAllStatesProcessed();
 	}
 	
 	
@@ -99,6 +104,7 @@ public class InputJSONReader {
 				Variable var = readVariable(line);
 				
 				if(var == null){
+					searchTraceProcessor.afterAllVariablesProcessed();
 					readingState = ReadingState.NONE;
 				}else{
 					return var;
@@ -111,6 +117,7 @@ public class InputJSONReader {
 				Operator op = readOperator(line);
 				
 				if(op == null){
+					searchTraceProcessor.afterAllOperatorsProcessed();
 					readingState = ReadingState.NONE;
 				}else{
 					return op;
