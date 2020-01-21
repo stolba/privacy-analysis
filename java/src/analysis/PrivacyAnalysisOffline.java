@@ -63,7 +63,13 @@ public class PrivacyAnalysisOffline {
 		System.out.println("validate...");
 		
 		
-		validator.validateOperators(tree.getOperatorPropertiesSet());
+		boolean valid = validator.validateOperators(tree.getOperatorPropertiesSet());
+		
+		if(valid){
+			System.out.println("The found properties are VALID");
+		}else{
+			System.out.println("The found properties are NOT VALID!");
+		}
 
 	}
 

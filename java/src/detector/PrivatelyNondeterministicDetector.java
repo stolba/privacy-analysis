@@ -51,6 +51,9 @@ public class PrivatelyNondeterministicDetector implements
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
 		//find a private variable for which there is more than one effect value 
+		//or more then one private variable in the effect
+		int numOfDistinctPrivateVarEffects = 0;
+		
 		for(String var : privateVarIDs){
 			Set<Integer> opValues = new HashSet<>();
 			
@@ -63,8 +66,15 @@ public class PrivatelyNondeterministicDetector implements
 				return true;
 			}
 			
+			if(opValues.size() == 1 ) numOfDistinctPrivateVarEffects++;
+			
 		}
-		return false;
+		
+		if(numOfDistinctPrivateVarEffects > 1){
+			return true;
+		}else{
+			return false;
+		}
 		
 	}
 
