@@ -1,0 +1,5 @@
+STATE:{"agentID":0,"senderID":-1,"stateID":0,"parentID":-1,"cost":0,"heuristic":-1,"privateIDs": [0,0],"values": [2,1,1],"context":"init"}
+STATE:{"agentID":0,"senderID":1,"stateID":2,"parentID":-1,"cost":1,"heuristic":1,"privateIDs": [0,1],"values": [3,1,1],"context":"received"}
+STATE:{"agentID":0,"senderID":1,"stateID":3,"parentID":-1,"cost":3,"heuristic":1,"privateIDs": [0,2],"values": [0,1,1],"context":"received"}
+STATE:{"agentID":0,"senderID":-1,"stateID":6,"parentID":5,"cost":5,"heuristic":2,"privateIDs": [1,2],"values": [3,0,0],"context":"sending"}
+STATE:{"agentID":0,"senderID":0,"stateID":8,"parentID":7,"cost":7,"heuristic":0,"privateIDs": [0,2],"values": [1,1,1],"context":"goal-verified"}

@@ -1,0 +1,2 @@
+STATE:{"agentID":0,"senderID":-1,"stateID":0,"parentID":-1,"cost":0,"heuristic":-1,"privateIDs": [0,0,0],"values": [2,1,1],"context":"init"}
+STATE:{"agentID":0,"senderID":1,"stateID":2,"parentID":-1,"cost":1,"heuristic":1,"privateIDs": [0,1,0],"values": [3,1,1],"context":"received"}
