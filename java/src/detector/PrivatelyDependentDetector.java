@@ -1,5 +1,6 @@
 package detector;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,15 +12,18 @@ import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
-public class PrivatelyDependentDetector implements PropertyDetectorInterface {
+public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterface {
 	
-
 	@Override
-	public Set<OperatorSet> detectProperty(SearchTree tree, SearchState relevantState) {
+	public Set<OperatorSet> detectPropertyOnline(
+			Collection<Operator> allOperators,
+			Map<Integer, SearchState> stateMap, SearchState relevantState,
+			SearchState iParent, int analyzedAgentID) {
 		
+
 		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DEPENDENT,false);
 		
-		for(Operator op : tree.getAllOperators()){
+		for(Operator op : allOperators){
 			if(op.applicable(relevantState)){
 				
 				boolean noSuccessor = true;
@@ -42,16 +46,17 @@ public class PrivatelyDependentDetector implements PropertyDetectorInterface {
 		return result;
 	}
 
+	
+	
+
+	
+
 	@Override
 	public EnumPrivacyProperty getPrivacyProperty() {
 		return EnumPrivacyProperty.PRIVATELY_DEPENDENT;
 	}
 
-	@Override
-	public boolean isApplicableOnline() {
-		return true;
-	}
-
+	
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
 		//find a private variable for which there is exactly one precondition value 
@@ -71,5 +76,7 @@ public class PrivatelyDependentDetector implements PropertyDetectorInterface {
 		return false;
 		
 	}
+
+	
 
 }

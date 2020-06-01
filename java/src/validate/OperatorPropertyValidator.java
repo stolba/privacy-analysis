@@ -15,7 +15,8 @@ import tree.SearchState;
 import tree.Variable;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
-import detector.PropertyDetectorInterface;
+import detector.OfflinePropertyDetectorInterface;
+import detector.OnlinePropertyDetectorInterface;
 
 public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	
@@ -23,7 +24,8 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	
 	private final Map<Integer,Set<EnumPrivacyProperty>> groundTruthOpPrivacyProperties = new HashMap<>();
 	
-	private final List<PropertyDetectorInterface> propertyDetectors = new LinkedList<>();
+	private final List<OnlinePropertyDetectorInterface> onlinePropertyDetectors = new LinkedList<>();
+	private final List<OfflinePropertyDetectorInterface> offlinePropertyDetectors = new LinkedList<>();
 	
 	private final Set<String> privateVarIDs = new HashSet<>();
 	
@@ -34,8 +36,12 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 		this.analyzedAgentID = analyzedAgentID;
 	}
 	
-	public void addPropertyDetector(PropertyDetectorInterface detector){
-		propertyDetectors.add(detector);
+	public void addPropertyDetector(OnlinePropertyDetectorInterface detector){
+		onlinePropertyDetectors.add(detector);
+	}
+	
+	public void addPropertyDetector(OfflinePropertyDetectorInterface detector){
+		offlinePropertyDetectors.add(detector);
 	}
 	
 	public boolean validateOperators(Set<OperatorSet> operatorPropertiesSet){
@@ -112,7 +118,13 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	public void afterAllOperatorsProcessed() {
 		System.out.println("GT: afterAllOperatorsProcessed...");
 		for(Operator op : opMap.values()){
-			for(PropertyDetectorInterface detector : propertyDetectors){
+			for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
+				if(detector.isGroundTruthProperty(op,privateVarIDs)){
+					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
+					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+				}
+			}
+			for(OfflinePropertyDetectorInterface detector : offlinePropertyDetectors){
 				if(detector.isGroundTruthProperty(op,privateVarIDs)){
 					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
 					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());

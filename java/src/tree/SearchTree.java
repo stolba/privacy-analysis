@@ -110,11 +110,11 @@ public class SearchTree implements SearchTraceInputInterface{
 				
 			}
 			
-			addOpSet(iaDetector.detectProperty(this, state));
+			addOpSet(iaDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), state, iparent, analyzedAgentID));
 			
-			addOpSet(piDetector.detectProperty(this, state));
+			addOpSet(piDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), state, iparent, analyzedAgentID));
 			
-			addOpSet(noDetector.detectProperty(this, iparent));
+			addOpSet(noDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), state, iparent, analyzedAgentID));
 			
 			//detect whether all successors of the current i-parent were received
 			//TODO: this has to be turned off when not using GBFS
@@ -123,7 +123,7 @@ public class SearchTree implements SearchTraceInputInterface{
 				stateWithAllSuccessorsReceived.allSuccessorsReceived = true;
 				System.out.println("all successors of state "+stateWithAllSuccessorsReceived+" received");
 				
-				addOpSet(pdDetector.detectProperty(this, stateWithAllSuccessorsReceived));
+				addOpSet(pdDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), stateWithAllSuccessorsReceived,null,analyzedAgentID));
 			}
 			previousReceivedState = state;
 		}
@@ -139,8 +139,8 @@ public class SearchTree implements SearchTraceInputInterface{
 	
 	@Override
 	public void afterAllStatesProcessed(){
-		addOpSet(niaDetector.detectProperty(this, null));
-		addOpSet(deDetector.detectProperty(this, null));
+		addOpSet(niaDetector.detectPropertyOffline(this.getAllOperators(), this.getOperatorPropertiesSet()));
+		addOpSet(deDetector.detectPropertyOffline(this.getAllOperators(), this.getOperatorPropertiesSet()));
 	}
 	
 	

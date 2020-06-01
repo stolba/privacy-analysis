@@ -2,6 +2,7 @@ package detector;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -10,7 +11,7 @@ import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
-public class PrivatelyIndependentDetector implements PropertyDetectorInterface {
+public class PrivatelyIndependentDetector implements OnlinePropertyDetectorInterface {
 	
 	private final Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors;
 	
@@ -21,15 +22,20 @@ public class PrivatelyIndependentDetector implements PropertyDetectorInterface {
 		super();
 		this.privatelyDifferentStateDetectors = privatelyDifferentStateDetectors;
 	}
-
+	
 	@Override
-	public Set<OperatorSet> detectProperty(SearchTree tree, SearchState relevantState) {
+	public Set<OperatorSet> detectPropertyOnline(
+			Collection<Operator> allOperators,
+			Map<Integer, SearchState> stateMap, SearchState relevantState,
+			SearchState iParent, int analyzedAgentID) {
+		
+
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
 		
-		SearchState iparent = tree.getSentStateMap().get(relevantState.iparentID);
+		SearchState iparent = stateMap.get(relevantState.iparentID);
 		
-		for(SearchState s : tree.getSentStateMap().values()){
+		for(SearchState s : stateMap.values()){
 			if(iparent.publiclyEquivalent(s)){
 				if(iparent.privatelyDifferent(s, privatelyDifferentStateDetectors)){
 					OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_INDEPENDENT,false);
@@ -46,17 +52,15 @@ public class PrivatelyIndependentDetector implements PropertyDetectorInterface {
 		return result;
 	}
 
+
+	
+
 	@Override
 	public EnumPrivacyProperty getPrivacyProperty() {
 		
 		return EnumPrivacyProperty.PRIVATELY_INDEPENDENT;
 	}
 
-	@Override
-	public boolean isApplicableOnline() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
@@ -77,5 +81,7 @@ public class PrivatelyIndependentDetector implements PropertyDetectorInterface {
 		return false;
 		
 	}
+
+	
 
 }

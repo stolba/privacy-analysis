@@ -1,6 +1,8 @@
 package detector;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -10,10 +12,15 @@ import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
 public class PrivatelyNondeterministicDetector implements
-		PropertyDetectorInterface {
+		OnlinePropertyDetectorInterface {
 
 	@Override
-	public Set<OperatorSet> detectProperty(SearchTree tree, SearchState relevantState) {
+	public Set<OperatorSet> detectPropertyOnline(
+			Collection<Operator> allOperators,
+			Map<Integer, SearchState> stateMap, SearchState relevantState,
+			SearchState iParent, int analyzedAgentID) {
+		
+
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
 		//TODO: optimize
@@ -36,17 +43,14 @@ public class PrivatelyNondeterministicDetector implements
 		return result;
 	}
 
+	
+
 	@Override
 	public EnumPrivacyProperty getPrivacyProperty() {
 		
 		return EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC;
 	}
 
-	@Override
-	public boolean isApplicableOnline() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
@@ -77,5 +81,7 @@ public class PrivatelyNondeterministicDetector implements
 		}
 		
 	}
+
+	
 
 }
