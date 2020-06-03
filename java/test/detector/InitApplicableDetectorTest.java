@@ -11,6 +11,7 @@ import org.junit.Test;
 import analysis.OperatorSet;
 import tree.Operator;
 import tree.SearchState;
+import tree.SearchTree;
 
 public class InitApplicableDetectorTest {
 	
@@ -20,13 +21,16 @@ public class InitApplicableDetectorTest {
 	@Test
 	public void testDetectPropertyOnline() {
 		InitApplicableDetector detector = new InitApplicableDetector();
+		SearchTree tree = new SearchTree(0);
 		
 		SearchState relevantState = reader.readSearchState("{\"agentID\":1,\"senderID\":0,\"stateID\":1,\"parentID\":-1,\"iparentID\":-1,\"cost\":1,\"heuristic\":1,\"privateIDs\": [1,0],\"values\": [1,0,1,1],\"context\":\"received\"}");
 		Operator testOperator = new Operator();
 		
 		relevantState.responsibleOperators.add(testOperator);
 		
-		Set<OperatorSet> operatorSetSet = detector.detectPropertyOnline(null, null, relevantState, null, 0);
+		tree.addState(relevantState);
+		
+		Set<OperatorSet> operatorSetSet = detector.detectPropertyOnline(relevantState,tree);
 		
 		assertTrue(operatorSetSet.size() == 1);
 		

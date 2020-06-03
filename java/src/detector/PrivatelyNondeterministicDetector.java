@@ -1,8 +1,6 @@
 package detector;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -16,9 +14,8 @@ public class PrivatelyNondeterministicDetector implements
 
 	@Override
 	public Set<OperatorSet> detectPropertyOnline(
-			Collection<Operator> allOperators,
-			Map<Integer, SearchState> stateMap, SearchState relevantState,
-			SearchState iParent, int analyzedAgentID) {
+			SearchState relevantState,
+			SearchTree tree) {
 		
 
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();

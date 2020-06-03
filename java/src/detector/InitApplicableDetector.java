@@ -1,8 +1,6 @@
 package detector;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -15,12 +13,11 @@ public class InitApplicableDetector implements OnlinePropertyDetectorInterface {
 	
 	@Override
 	public Set<OperatorSet> detectPropertyOnline(
-			Collection<Operator> allOperators,
-			Map<Integer, SearchState> stateMap, SearchState relevantState,
-			SearchState iParent, int analyzedAgentID) {
+			SearchState relevantState,
+			SearchTree tree) {
 		
 		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.INIT_APPLICBLE,true);
-		if(relevantState.senderID == analyzedAgentID && relevantState.iparentID == SearchState.UNDEFINED_STATE_ID ){
+		if(relevantState.senderID == tree.analyzedAgentID && relevantState.iparentID == SearchState.UNDEFINED_STATE_ID ){
 			opSet.addAll(relevantState.responsibleOperators);
 		}
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
@@ -43,6 +40,10 @@ public class InitApplicableDetector implements OnlinePropertyDetectorInterface {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+
+
+
 
 	
 

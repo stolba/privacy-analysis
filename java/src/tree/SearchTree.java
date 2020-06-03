@@ -1,25 +1,14 @@
 package tree;
 
-import input.SearchTraceInputInterface;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import analysis.OperatorSet;
-import detector.InitApplicableDetector;
-import detector.NotInitApplicableDetector;
-import detector.PrivatelyDependentDetector;
-import detector.PrivatelyDifferentStateDetectorInterface;
-import detector.PrivatelyIndependentDetector;
-import detector.PrivatelyNondeterministicDetector;
-import detector.PrivatelyDeterministicDetector;
 
-//TODO: it is probably good idea to disentangle the search tree structure and its creation from the actual analysis algorithm. The online approach if viable at all can be done using the building primitives
-public class SearchTree implements SearchTraceInputInterface{
+
+public class SearchTree{
 	
 	public final int analyzedAgentID;
 
@@ -29,29 +18,17 @@ public class SearchTree implements SearchTraceInputInterface{
 	private Map<Integer,SearchState> receivedStateMap = new HashMap<>();
 	
 	
-	private SearchState previousReceivedState = null;
-	
-	private Set<OperatorSet> operatorPropertiesSet = new HashSet<>();
-	
-	
-	public PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
-	public InitApplicableDetector iaDetector = new InitApplicableDetector();
-	public PrivatelyIndependentDetector piDetector;
-	public PrivatelyNondeterministicDetector noDetector = new PrivatelyNondeterministicDetector();
-	public NotInitApplicableDetector niaDetector = new NotInitApplicableDetector();
-	public PrivatelyDeterministicDetector deDetector;
 	
 	
 	
-	public SearchTree(int analyzedAgentID,Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
+	
+	public SearchTree(int analyzedAgentID) {
 		super();
 		this.analyzedAgentID = analyzedAgentID;
 		
-		piDetector = new PrivatelyIndependentDetector(privatelyDifferentStateDetectors);
-		deDetector = new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors);
 	}
 
-	@Override
+	
 	public void addVariable(Variable var){
 		varMap.put(var.varID, var);
 		
@@ -59,7 +36,7 @@ public class SearchTree implements SearchTraceInputInterface{
 	}
 	
 	
-	@Override
+	
 	public void addOperator(Operator op){
 		// We are interested in projected operators of analyzedAgentID
 		if(analyzedAgentID != op.ownerID) return;
@@ -83,10 +60,8 @@ public class SearchTree implements SearchTraceInputInterface{
 		
 	}
 	
-	@Override
-	public void addStateSequential(SearchState state){
-		//TODO: we need to retain the order somehow
-		//TODO: we'll probably do all the processing here
+	
+	public void addState(SearchState state){
 		
 		
 		if(state.iparentID == SearchState.UNDEFINED_STATE_ID){
@@ -110,38 +85,12 @@ public class SearchTree implements SearchTraceInputInterface{
 				
 			}
 			
-			addOpSet(iaDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), state, iparent, analyzedAgentID));
-			
-			addOpSet(piDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), state, iparent, analyzedAgentID));
-			
-			addOpSet(noDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), state, iparent, analyzedAgentID));
-			
-			//detect whether all successors of the current i-parent were received
-			//TODO: this has to be turned off when not using GBFS
-			if(previousReceivedState !=null && previousReceivedState.iparentID != state.iparentID){
-				SearchState stateWithAllSuccessorsReceived = sentStateMap.get(previousReceivedState.iparentID);
-				stateWithAllSuccessorsReceived.allSuccessorsReceived = true;
-				System.out.println("all successors of state "+stateWithAllSuccessorsReceived+" received");
-				
-				addOpSet(pdDetector.detectPropertyOnline(this.getAllOperators(), this.getSentStateMap(), stateWithAllSuccessorsReceived,null,analyzedAgentID));
-			}
-			previousReceivedState = state;
 		}
 	}
 	
-	private void addOpSet(Set<OperatorSet> osSet){
-		for(OperatorSet os : osSet){
-			if(!os.isEmpty()){
-				operatorPropertiesSet.add(os);
-			}
-		}
-	}
 	
-	@Override
-	public void afterAllStatesProcessed(){
-		addOpSet(niaDetector.detectPropertyOffline(this.getAllOperators(), this.getOperatorPropertiesSet()));
-		addOpSet(deDetector.detectPropertyOffline(this.getAllOperators(), this.getOperatorPropertiesSet()));
-	}
+	
+	
 	
 	
 	
@@ -157,19 +106,25 @@ public class SearchTree implements SearchTraceInputInterface{
 		return receivedStateMap;
 	}
 	
-	public Set<OperatorSet> getOperatorPropertiesSet(){
-		return operatorPropertiesSet;
+	public SearchState getIParent(SearchState state) {
+		return receivedStateMap.get(state.iparentID);
+	}
+	
+	public SearchState getReceivedState(int id) {
+		return receivedStateMap.get(id);
+	}
+	
+	public SearchState getSentState(int id) {
+		return sentStateMap.get(id);
 	}
 
-	@Override
-	public void afterAllVariablesProcessed() {
-		// TODO Auto-generated method stub
-		
+
+	public Collection<SearchState> getSentStates() {
+		return sentStateMap.values();
 	}
 
-	@Override
-	public void afterAllOperatorsProcessed() {
-		// TODO Auto-generated method stub
-		
-	}
+
+	
+
+	
 }

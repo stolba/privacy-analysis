@@ -1,12 +1,16 @@
 package analysis;
 
 import input.InputJSONReader;
+import input.SearchTraceInputInterface;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import tree.Operator;
+import tree.SearchState;
 import tree.SearchTree;
+import tree.Variable;
 import validate.OperatorPropertyValidator;
 import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.ProjectedHeuristicPrivatelyDifferentDetector;
@@ -23,7 +27,8 @@ public class PrivacyAnalysisOffline {
 		String traceDirectory = args[0];
 		int analyzedAgentID = Integer.parseInt(args[1]);
 		
-		SearchTree tree = new SearchTree(analyzedAgentID,privatelyDifferentStateDetectors);
+		final SearchTree tree = new SearchTree(analyzedAgentID);
+		final Algorithm algorithm = new Algorithm(tree,analyzedAgentID,privatelyDifferentStateDetectors);
 		
 		InputJSONReader reader = new InputJSONReader();
 		
@@ -36,11 +41,47 @@ public class PrivacyAnalysisOffline {
 		for(int i = 0; i < numOfTraces; ++i){
 			if(i == analyzedAgentID) continue;
 			
-			reader.readJSONFileOffline(traceDirectory+"/"+"agent"+i+".json",tree);
+			reader.readJSONFileOffline(traceDirectory+"/"+"agent"+i+".json",new SearchTraceInputInterface() {
+				
+				@Override
+				public void afterAllVariablesProcessed() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void afterAllStatesProcessed() {
+					algorithm.processStatesOffline();
+					
+				}
+				
+				@Override
+				public void afterAllOperatorsProcessed() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void addVariable(Variable var) {
+					tree.addVariable(var);
+				}
+				
+				@Override
+				public void addStateSequential(SearchState state) {
+					tree.addState(state);
+					algorithm.processStateOnline(state);
+				}
+				
+				@Override
+				public void addOperator(Operator op) {
+					tree.addOperator(op);
+					
+				}
+			});
 		}
 		
 		
-		for(OperatorSet os : tree.getOperatorPropertiesSet()){
+		for(OperatorSet os : algorithm.getOperatorPropertiesSet()){
 			System.out.println("operators "+os.privacyProperty+": " + os);
 			
 		}
@@ -51,19 +92,19 @@ public class PrivacyAnalysisOffline {
 		OperatorPropertyValidator validator = new OperatorPropertyValidator(analyzedAgentID);
 		
 		//TODO: this could be done better
-		validator.addPropertyDetector(tree.deDetector);
-		validator.addPropertyDetector(tree.iaDetector);
-		validator.addPropertyDetector(tree.niaDetector);
-		validator.addPropertyDetector(tree.noDetector);
-		validator.addPropertyDetector(tree.pdDetector);
-		validator.addPropertyDetector(tree.piDetector);
+		validator.addPropertyDetector(algorithm.deDetector);
+		validator.addPropertyDetector(algorithm.iaDetector);
+		validator.addPropertyDetector(algorithm.niaDetector);
+		validator.addPropertyDetector(algorithm.noDetector);
+		validator.addPropertyDetector(algorithm.pdDetector);
+		validator.addPropertyDetector(algorithm.piDetector);
 		
 		reader.readJSONFileOffline(traceDirectory+"/"+"agent"+analyzedAgentID+".json",validator);
 		
 		System.out.println("validate...");
 		
 		
-		boolean valid = validator.validateOperators(tree.getOperatorPropertiesSet());
+		boolean valid = validator.validateOperators(algorithm.getOperatorPropertiesSet());
 		
 		if(valid){
 			System.out.println("The found properties are VALID");

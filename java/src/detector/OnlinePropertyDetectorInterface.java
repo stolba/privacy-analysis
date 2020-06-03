@@ -1,7 +1,5 @@
 package detector;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -12,7 +10,7 @@ import analysis.OperatorSet;
 
 public interface OnlinePropertyDetectorInterface {
 	
-	public Set<OperatorSet> detectPropertyOnline(Collection<Operator> allOperators, Map<Integer,SearchState> stateMap, SearchState relevantState, SearchState iParent, int analyzedAgentID);
+	public Set<OperatorSet> detectPropertyOnline(SearchState relevantState, SearchTree tree);
 	
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs);
 	

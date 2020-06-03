@@ -25,18 +25,17 @@ public class PrivatelyIndependentDetector implements OnlinePropertyDetectorInter
 	
 	@Override
 	public Set<OperatorSet> detectPropertyOnline(
-			Collection<Operator> allOperators,
-			Map<Integer, SearchState> stateMap, SearchState relevantState,
-			SearchState iParent, int analyzedAgentID) {
+			SearchState relevantState,
+			SearchTree tree) {
 		
 
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
 		
-		SearchState iparent = stateMap.get(relevantState.iparentID);
+		SearchState iparent = tree.getSentState(relevantState.iparentID);
 		
-		for(SearchState s : stateMap.values()){
-			SearchState otherIParent = stateMap.get(s.iparentID);
+		for(SearchState s : tree.getSentStates()){
+			SearchState otherIParent = tree.getSentState(s.iparentID);
 			if(otherIParent == null) continue;
 			
 			if(iparent.publiclyEquivalent(otherIParent)){

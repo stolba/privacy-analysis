@@ -1,9 +1,6 @@
 package detector;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -16,9 +13,8 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 	
 	@Override
 	public Set<OperatorSet> detectPropertyOnline(
-			Collection<Operator> allOperators,
-			Map<Integer, SearchState> stateMap, SearchState relevantState,
-			SearchState iParent, int analyzedAgentID) {
+			SearchState relevantState,
+			SearchTree tree) {
 		
 
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
@@ -29,7 +25,7 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 			OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DEPENDENT,false);
 			
 		
-			for(Operator op : allOperators){
+			for(Operator op : tree.getAllOperators()){
 				if(op.applicable(relevantState)){
 					
 					boolean noSuccessor = true;
