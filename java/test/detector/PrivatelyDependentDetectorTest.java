@@ -46,13 +46,9 @@ public class PrivatelyDependentDetectorTest {
 		Set<OperatorSet> result = detector.detectPropertyOnline(relevantState,tree);
 		assertTrue(result.isEmpty());
 		
-		//if all successors are received but no successors, all actions are PD
-		relevantState.allSuccessorsReceived = true;	
-		result = detector.detectPropertyOnline(relevantState,tree);
-		assertFalse(result.isEmpty());
-		assertTrue(result.contains(tree.getAllOperators()));
 		
 		//add successor of the PI actions, PD action should be detected correctly 
+		relevantState.allSuccessorsReceived = true;
 		relevantState.successors.add(reader.readSearchState("{\"agentID\":1,\"senderID\":0,\"stateID\":2,\"parentID\":-1,\"iparentID\":1,\"cost\":1,\"heuristic\":1,\"privateIDs\": [1,0],\"values\": [0,1,1],\"context\":\"received\"}"));
 		result = detector.detectPropertyOnline(relevantState,tree);
 		assertFalse(result.isEmpty());
@@ -60,7 +56,8 @@ public class PrivatelyDependentDetectorTest {
 			assertTrue(opSet.contains(PDOperator));
 			assertTrue(opSet.size() == 1);
 		}
-		//TODO: ground truth test
+		
+		//ground truth test
 		Set<String> privateVarIDs = new HashSet<>();
 		privateVarIDs.add("1");
 		privateVarIDs.add("2");

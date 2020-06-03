@@ -122,6 +122,10 @@ public class SearchTree{
 	public Collection<SearchState> getSentStates() {
 		return sentStateMap.values();
 	}
+	
+	public Collection<SearchState> getReceivedStates() {
+		return receivedStateMap.values();
+	}
 
 
 	

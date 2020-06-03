@@ -40,10 +40,10 @@ public class PrivatelyIndependentDetectorTest {
 		Operator PDOperator = reader.readOperator("{\"agentID\":1,\"ownerID\":0,\"opName\":\"PDOp \",\"isPrivate\":false,\"opID\":0,\"cost\":1,\"pre\": {\"1\":1},\"eff\": {\"0\":1}}");
 		tree.addOperator(PDOperator);
 		
-		Operator PIOperator1 = reader.readOperator("{\"agentID\":1,\"ownerID\":0,\"opName\":\"PIOp1 \",\"isPrivate\":false,\"opID\":0,\"cost\":1,\"pre\": {\"1\":1,\"1\":0},\"eff\": {\"0\":0}}");
+		Operator PIOperator1 = reader.readOperator("{\"agentID\":1,\"ownerID\":0,\"opName\":\"PIOp1 \",\"isPrivate\":false,\"opID\":1,\"cost\":1,\"pre\": {\"1\":1,\"1\":0},\"eff\": {\"0\":0}}");
 		tree.addOperator(PIOperator1);
 		
-		Operator PIOperator2 = reader.readOperator("{\"agentID\":1,\"ownerID\":0,\"opName\":\"PIOp2 \",\"isPrivate\":false,\"opID\":0,\"cost\":1,\"pre\": {},\"eff\": {\"0\":0}}");
+		Operator PIOperator2 = reader.readOperator("{\"agentID\":1,\"ownerID\":0,\"opName\":\"PIOp2 \",\"isPrivate\":false,\"opID\":2,\"cost\":1,\"pre\": {\"0\":1},\"eff\": {\"0\":0}}");
 		tree.addOperator(PIOperator2);
 		
 		

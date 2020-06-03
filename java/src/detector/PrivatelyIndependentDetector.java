@@ -34,7 +34,7 @@ public class PrivatelyIndependentDetector implements OnlinePropertyDetectorInter
 		
 		SearchState iparent = tree.getSentState(relevantState.iparentID);
 		
-		for(SearchState s : tree.getSentStates()){
+		for(SearchState s : tree.getReceivedStates()){
 			SearchState otherIParent = tree.getSentState(s.iparentID);
 			if(otherIParent == null) continue;
 			
