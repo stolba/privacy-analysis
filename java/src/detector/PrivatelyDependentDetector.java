@@ -21,28 +21,44 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 			SearchState iParent, int analyzedAgentID) {
 		
 
-		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DEPENDENT,false);
+		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
-		for(Operator op : allOperators){
-			if(op.applicable(relevantState)){
-				
-				boolean noSuccessor = true;
-				
-				for(SearchState state : relevantState.successors){
-					if(op.matchEffects(state)) noSuccessor = false;
-					break;
+		//We must make sure all successors were already received!
+		if(relevantState.allSuccessorsReceived){
+			
+			OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DEPENDENT,false);
+			
+		
+			for(Operator op : allOperators){
+				if(op.applicable(relevantState)){
+					
+					boolean noSuccessor = true;
+					
+					for(SearchState state : relevantState.successors){
+						if(op.matchEffects(state)){
+							noSuccessor = false;
+							break;
+						}
+						
+					}
+					
+					
+					
+					if(noSuccessor){
+						System.out.println(op + " is PD because it is publicly applicable but not aplied on " + relevantState);
+						//op is pd
+						opSet.add(op);
+					}
 				}
-				
-				if(noSuccessor){
-					System.out.println(op + " is PD because it is publicly applicable but not aplied on " + relevantState);
-					//op is pd
-					opSet.add(op);
-				}
+			}
+			
+			if(!opSet.isEmpty()){
+				result.add(opSet);
 			}
 		}
 		
-		Set<OperatorSet> result =  new HashSet<OperatorSet>();
-		result.add(opSet);
+		
+		
 		return result;
 	}
 

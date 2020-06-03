@@ -36,8 +36,11 @@ public class PrivatelyIndependentDetector implements OnlinePropertyDetectorInter
 		SearchState iparent = stateMap.get(relevantState.iparentID);
 		
 		for(SearchState s : stateMap.values()){
-			if(iparent.publiclyEquivalent(s)){
-				if(iparent.privatelyDifferent(s, privatelyDifferentStateDetectors)){
+			SearchState otherIParent = stateMap.get(s.iparentID);
+			if(otherIParent == null) continue;
+			
+			if(iparent.publiclyEquivalent(otherIParent)){
+				if(iparent.privatelyDifferent(otherIParent, privatelyDifferentStateDetectors)){
 					OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_INDEPENDENT,false);
 					opSet.addAll(relevantState.responsibleOperators);
 					opSet.retainAll(s.responsibleOperators);

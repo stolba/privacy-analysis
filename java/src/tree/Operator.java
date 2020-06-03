@@ -79,7 +79,7 @@ public class Operator {
 	}
 	
 	public boolean matchEffects(SearchState state){
-		for(int i = 0; i < preMask.length; i++){
+		for(int i = 0; i < effMask.length; i++){
 			if(effMask[i] != SearchState.UNDEFINED_VALUE){
 				if(state.values[i] != effMask[i]) return false;
 			}
