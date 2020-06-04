@@ -1,7 +1,9 @@
 package analysis;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import tree.SearchState;
@@ -23,7 +25,8 @@ public class Algorithm{
 	
 	private SearchState previousReceivedState = null;
 	
-	private Set<OperatorSet> operatorPropertiesSet = new HashSet<>();
+	private Map<EnumPrivacyProperty,Set<OperatorSet>> operatorPropertiesMap = new HashMap<>();
+	
 	
 	
 	public PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
@@ -85,23 +88,24 @@ public class Algorithm{
 	private void addOpSet(Set<OperatorSet> osSet){
 		for(OperatorSet os : osSet){
 			if(!os.isEmpty()){
-				operatorPropertiesSet.add(os);
+				if(!operatorPropertiesMap.containsKey(os.privacyProperty)) operatorPropertiesMap.put(os.privacyProperty, new HashSet<OperatorSet>());
+				operatorPropertiesMap.get(os.privacyProperty).add(os);
 			}
 		}
 	}
 	
 	
 	public void processStatesOffline(){
-		addOpSet(niaDetector.detectPropertyOffline(tree.getAllOperators(), operatorPropertiesSet));
-		addOpSet(deDetector.detectPropertyOffline(tree.getAllOperators(), operatorPropertiesSet));
+		addOpSet(niaDetector.detectPropertyOffline(tree.getAllOperators(), getOperatorPropertiesSet(EnumPrivacyProperty.INIT_APPLICBLE)));
+		addOpSet(deDetector.detectPropertyOffline(tree.getAllOperators(), null));
 	}
 	
 	
 	
 	
 	
-	public Set<OperatorSet> getOperatorPropertiesSet(){
-		return operatorPropertiesSet;
+	public Set<OperatorSet> getOperatorPropertiesSet(EnumPrivacyProperty property){
+		return operatorPropertiesMap.getOrDefault(property, new HashSet<OperatorSet>());
 	}
 
 	

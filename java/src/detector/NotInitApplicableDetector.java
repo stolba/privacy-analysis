@@ -20,6 +20,7 @@ public class NotInitApplicableDetector implements OfflinePropertyDetectorInterfa
 			Collection<Operator> allOperators,
 			Set<OperatorSet> operatorPropertiesSet) {
 		
+		if(operatorPropertiesSet == null) return new HashSet<OperatorSet>();
 
 		OperatorSet resultOpSet = new OperatorSet(EnumPrivacyProperty.NOT_INIT_APPLICABLE,false);
 		

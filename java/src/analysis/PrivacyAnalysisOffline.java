@@ -6,7 +6,9 @@ import input.SearchTraceInputInterface;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import lp.LPPropertiecComputation;
 import tree.Operator;
 import tree.SearchState;
 import tree.SearchTree;
@@ -80,10 +82,11 @@ public class PrivacyAnalysisOffline {
 			});
 		}
 		
-		
-		for(OperatorSet os : algorithm.getOperatorPropertiesSet()){
-			System.out.println("operators "+os.privacyProperty+": " + os);
-			
+		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
+			for(OperatorSet os : algorithm.getOperatorPropertiesSet(prop)){
+				System.out.println("operators "+os.privacyProperty+": " + os);
+				
+			}
 		}
 		
 		//validation
@@ -102,14 +105,31 @@ public class PrivacyAnalysisOffline {
 		reader.readJSONFileOffline(traceDirectory+"/"+"agent"+analyzedAgentID+".json",validator);
 		
 		System.out.println("validate...");
+		boolean validAll = true;
+		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
+			boolean valid = validator.validateOperators(algorithm.getOperatorPropertiesSet(prop));
+			if(!valid) validAll = false;
+		}
 		
-		
-		boolean valid = validator.validateOperators(algorithm.getOperatorPropertiesSet());
-		
-		if(valid){
+		if(validAll){
 			System.out.println("The found properties are VALID");
 		}else{
 			System.out.println("The found properties are NOT VALID!");
+		}
+		
+		System.out.println("compute LP...");
+		LPPropertiecComputation lpComputation = new LPPropertiecComputation(tree);
+		
+		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
+			if(!algorithm.getOperatorPropertiesSet(prop).isEmpty()){
+				System.out.println("\ncompute LP for " + prop);
+				
+				lpComputation.prepareLP(algorithm.getOperatorPropertiesSet(prop));
+				Set<String> operators = lpComputation.computeLP();
+				
+				System.out.println(prop + " operators: " + operators);
+				System.out.println(prop + " value = " + operators.size());
+			}
 		}
 
 	}
