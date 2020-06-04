@@ -11,12 +11,18 @@ import analysis.OperatorSet;
 
 public class InitApplicableDetector implements OnlinePropertyDetectorInterface {
 	
+	SearchTree tree;
+	
 	@Override
 	public Set<OperatorSet> detectPropertyOnline(
 			SearchState relevantState,
 			SearchTree tree) {
 		
+		this.tree = tree;
+		
 		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.INIT_APPLICBLE,true);
+		
+		
 		if(relevantState.senderID == tree.analyzedAgentID && relevantState.iparentID == SearchState.UNDEFINED_STATE_ID ){
 			opSet.addAll(relevantState.responsibleOperators);
 		}
@@ -37,8 +43,7 @@ public class InitApplicableDetector implements OnlinePropertyDetectorInterface {
 
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privatePropertyIDs) {
-		// TODO Auto-generated method stub
-		return true;
+		return op.applicable(tree.getInitialState());
 	}
 
 

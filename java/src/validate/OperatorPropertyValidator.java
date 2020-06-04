@@ -3,6 +3,7 @@ package validate;
 import input.SearchTraceInputInterface;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,12 +37,12 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 		this.analyzedAgentID = analyzedAgentID;
 	}
 	
-	public void addPropertyDetector(OnlinePropertyDetectorInterface detector){
-		onlinePropertyDetectors.add(detector);
+	public void addOnlinePropertyDetectors(Collection<OnlinePropertyDetectorInterface> detectors){
+		onlinePropertyDetectors.addAll(detectors);
 	}
 	
-	public void addPropertyDetector(OfflinePropertyDetectorInterface detector){
-		offlinePropertyDetectors.add(detector);
+	public void addOfflinePropertyDetectors(Collection<OfflinePropertyDetectorInterface> detectors){
+		offlinePropertyDetectors.addAll(detectors);
 	}
 	
 	public boolean validateOperators(Set<OperatorSet> operatorPropertiesSet){

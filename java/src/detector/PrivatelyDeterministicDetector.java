@@ -2,10 +2,12 @@ package detector;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
 import tree.SearchState;
+import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
@@ -25,13 +27,13 @@ public class PrivatelyDeterministicDetector implements OfflinePropertyDetectorIn
 
 	@Override
 	public Set<OperatorSet> detectPropertyOffline(
-			Collection<Operator> allOperators,
-			Set<OperatorSet> operatorPropertiesSet) {
+			SearchTree tree,
+			Map<EnumPrivacyProperty,Set<OperatorSet>> operatorPropertiesMap) {
 		
 
 		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DETERMINISTIC,false);
 		
-		for(Operator op : allOperators){
+		for(Operator op : tree.getAllOperators()){
 			boolean opIsPubliclyDeterministic = true;
 			
 			for(SearchState s1 : op.matchingTransitions){

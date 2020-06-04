@@ -1,6 +1,7 @@
 package analysis;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +12,8 @@ import tree.SearchTree;
 import analysis.OperatorSet;
 import detector.InitApplicableDetector;
 import detector.NotInitApplicableDetector;
+import detector.OfflinePropertyDetectorInterface;
+import detector.OnlinePropertyDetectorInterface;
 import detector.PrivatelyDependentDetector;
 import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.PrivatelyIndependentDetector;
@@ -22,30 +25,39 @@ public class Algorithm{
 	
 	public final int analyzedAgentID;
 
-	
-	private SearchState previousReceivedState = null;
+	private final EnumSet<EnumAlgorithmAssumptions> assumptions;
 	
 	private Map<EnumPrivacyProperty,Set<OperatorSet>> operatorPropertiesMap = new HashMap<>();
 	
+	private final Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors;
+	private final Collection<OnlinePropertyDetectorInterface> onlinePropertyDetectors;
+	private final Collection<OfflinePropertyDetectorInterface> offlinePropertyDetectors;
 	
 	
-	public PrivatelyDependentDetector pdDetector = new PrivatelyDependentDetector();
-	public InitApplicableDetector iaDetector = new InitApplicableDetector();
-	public PrivatelyIndependentDetector piDetector;
-	public PrivatelyNondeterministicDetector noDetector = new PrivatelyNondeterministicDetector();
-	public NotInitApplicableDetector niaDetector = new NotInitApplicableDetector();
-	public PrivatelyDeterministicDetector deDetector;
+	
+	
 	
 	public SearchTree tree;
 	
 	
 	
-	public Algorithm(SearchTree tree, int analyzedAgentID,Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
+	public Algorithm(
+			SearchTree tree, 
+			int analyzedAgentID,
+			EnumSet<EnumAlgorithmAssumptions> assumptions,
+			Collection<OnlinePropertyDetectorInterface> onlinePropertyDetectors,
+			Collection<OfflinePropertyDetectorInterface> offlinePropertyDetectors,
+			Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
 		super();
 		this.analyzedAgentID = analyzedAgentID;
 		
-		piDetector = new PrivatelyIndependentDetector(privatelyDifferentStateDetectors);
-		deDetector = new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors);
+		this.assumptions = assumptions;
+		
+		this.onlinePropertyDetectors = onlinePropertyDetectors;
+		this.offlinePropertyDetectors = offlinePropertyDetectors;
+		this.privatelyDifferentStateDetectors = privatelyDifferentStateDetectors;
+		
+		
 		
 		this.tree = tree;
 	}
@@ -58,36 +70,33 @@ public class Algorithm{
 	
 	public void processStateOnline(SearchState state){
 		
-		if(state.iparentID == SearchState.UNDEFINED_STATE_ID){
-			//sent state
+		//process received state
+		if(state.senderID == analyzedAgentID){
 			
-		}else{
-			//received state
-			
-			SearchState iparent = tree.getIParent(state);
-			
-			addOpSet(iaDetector.detectPropertyOnline( state, tree));
-			
-			addOpSet(piDetector.detectPropertyOnline(state, tree));
-			
-			addOpSet(noDetector.detectPropertyOnline(state, tree));
+			System.out.println("Algorithm processing state: "+state);
 			
 			//detect whether all successors of the current i-parent were received
-			//TODO: this has to be turned off when not using GBFS
-			if(previousReceivedState !=null && previousReceivedState.iparentID != state.iparentID){
-				SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(previousReceivedState.iparentID);
-				stateWithAllSuccessorsReceived.allSuccessorsReceived = true;
-				System.out.println("all successors of state "+stateWithAllSuccessorsReceived+" received");
-				
-				addOpSet(pdDetector.detectPropertyOnline(stateWithAllSuccessorsReceived,tree));
+			if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION)){
+				if(tree.getPreviousReceivedState() !=null && tree.getPreviousReceivedState().iparentID != state.iparentID){
+					SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(tree.getPreviousReceivedState().iparentID);
+					if(stateWithAllSuccessorsReceived != null){
+						stateWithAllSuccessorsReceived.allSuccessorsReceived = true;
+					}
+				}
 			}
-			previousReceivedState = state;
+			
+			for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
+				addOpSet(detector.detectPropertyOnline( state, tree));
+			}
+			
 		}
 	}
 	
 	private void addOpSet(Set<OperatorSet> osSet){
 		for(OperatorSet os : osSet){
 			if(!os.isEmpty()){
+				System.out.println("Algorithm add operator set: "+os);
+				
 				if(!operatorPropertiesMap.containsKey(os.privacyProperty)) operatorPropertiesMap.put(os.privacyProperty, new HashSet<OperatorSet>());
 				operatorPropertiesMap.get(os.privacyProperty).add(os);
 			}
@@ -96,8 +105,11 @@ public class Algorithm{
 	
 	
 	public void processStatesOffline(){
-		addOpSet(niaDetector.detectPropertyOffline(tree.getAllOperators(), getOperatorPropertiesSet(EnumPrivacyProperty.INIT_APPLICBLE)));
-		addOpSet(deDetector.detectPropertyOffline(tree.getAllOperators(), null));
+		for(OfflinePropertyDetectorInterface detector : offlinePropertyDetectors){
+			addOpSet(detector.detectPropertyOffline(tree, operatorPropertiesMap));
+			
+		}
+		
 	}
 	
 	

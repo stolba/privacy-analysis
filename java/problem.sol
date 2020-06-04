@@ -26,7 +26,7 @@
   <constraint name="c1" index="0" slack="0"/>
  </linearConstraints>
  <variables>
-  <variable name="complete_mission" index="0" value="1"/>
-  <variable name="survey_locationl1" index="1" value="0"/>
+  <variable name="op_not_init_applicable" index="0" value="1"/>
+  <variable name="op_init_applicable" index="1" value="0"/>
  </variables>
 </CPLEXSolution>

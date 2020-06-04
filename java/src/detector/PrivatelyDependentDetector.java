@@ -16,44 +16,48 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 			SearchState relevantState,
 			SearchTree tree) {
 		
-
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
-		//We must make sure all successors were already received!
-		if(relevantState.allSuccessorsReceived){
+		if(tree.getPreviousReceivedState() !=null){
+			SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(tree.getPreviousReceivedState().iparentID);
 			
-			OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DEPENDENT,false);
+			if(stateWithAllSuccessorsReceived != null && stateWithAllSuccessorsReceived.allSuccessorsReceived == true){
 			
-		
-			for(Operator op : tree.getAllOperators()){
-				if(op.applicable(relevantState)){
-					
-					boolean noSuccessor = true;
-					
-					for(SearchState state : relevantState.successors){
-						if(op.matchEffects(state)){
-							noSuccessor = false;
-							break;
+				OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DEPENDENT,false);
+				
+				
+				for(Operator op : tree.getAllOperators()){
+					if(op.applicable(stateWithAllSuccessorsReceived)){
+						
+						boolean noSuccessor = true;
+						
+						for(SearchState state : stateWithAllSuccessorsReceived.successors){
+							if(op.matchEffects(state)){
+								noSuccessor = false;
+								break;
+							}
+							
 						}
 						
-					}
-					
-					
-					
-					if(noSuccessor){
-						System.out.println(op + " is PD because it is publicly applicable but not aplied on " + relevantState);
-						//op is pd
-						opSet.add(op);
+						
+						
+						if(noSuccessor){
+							System.out.println(op + " is PD because it is publicly applicable but not aplied on " + stateWithAllSuccessorsReceived);
+							//op is pd
+							opSet.add(op);
+						}
 					}
 				}
+				
+				if(!opSet.isEmpty()){
+					result.add(opSet);
+				}
+			
 			}
 			
-			if(!opSet.isEmpty()){
-				result.add(opSet);
-			}
 		}
 		
-		
+
 		
 		return result;
 	}

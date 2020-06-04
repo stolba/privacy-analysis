@@ -1,41 +1,49 @@
 package detector;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
-import tree.SearchState;
 import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
+//TODO: not-init-applicable - to hold, the action must be applicable in the public part of the initial state, otherwise it does not make sense!
 public class NotInitApplicableDetector implements OfflinePropertyDetectorInterface {
 	
-	
+	SearchTree tree;
 
 	@Override
 	public Set<OperatorSet> detectPropertyOffline(
-			Collection<Operator> allOperators,
-			Set<OperatorSet> operatorPropertiesSet) {
+			SearchTree tree,
+			Map<EnumPrivacyProperty,Set<OperatorSet>> operatorPropertiesMap
+			) {
 		
-		if(operatorPropertiesSet == null) return new HashSet<OperatorSet>();
-
+		this.tree = tree;
+		
+		Set<OperatorSet> operatorPropertiesSet = operatorPropertiesMap.get(EnumPrivacyProperty.INIT_APPLICBLE);
+		
 		OperatorSet resultOpSet = new OperatorSet(EnumPrivacyProperty.NOT_INIT_APPLICABLE,false);
 		
-		for(Operator op : allOperators){
-			boolean nia = true;
+		for(Operator op : tree.getAllOperators()){
 			
-			for(OperatorSet opSet : operatorPropertiesSet){
-				if(opSet.privacyProperty == EnumPrivacyProperty.INIT_APPLICBLE && opSet.contains(op)){
-					nia = false;
-					break;
+			if(op.applicable(tree.getInitialState())){
+				boolean nia = true;
+			
+				if(operatorPropertiesSet != null){
+					for(OperatorSet opSet : operatorPropertiesSet){
+						if(opSet.privacyProperty == EnumPrivacyProperty.INIT_APPLICBLE && opSet.contains(op)){
+							nia = false;
+							break;
+						}
+					}
 				}
-			}
+				
+				if(nia){
+					resultOpSet.add(op);
+				}
 			
-			if(nia){
-				resultOpSet.add(op);
 			}
 			
 		}
@@ -55,8 +63,7 @@ public class NotInitApplicableDetector implements OfflinePropertyDetectorInterfa
 
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privatePropertyIDs) {
-		// TODO Auto-generated method stub
-		return true;
+		return !op.applicable(tree.getInitialState());
 	}
 
 

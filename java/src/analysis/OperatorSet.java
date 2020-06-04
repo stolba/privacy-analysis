@@ -19,6 +19,14 @@ public class OperatorSet extends HashSet<Operator> {
 		this.privacyProperty = privacyProperty;
 		this.isDisjunctive = isDisjunctive;
 	}
+
+	@Override
+	public String toString() {
+		return "OperatorSet privacyProperty=" + privacyProperty
+				+ " [" + super.toString() + "]";
+	}
+	
+	
 	
 	
 

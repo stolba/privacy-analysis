@@ -4,6 +4,8 @@ import input.InputJSONReader;
 import input.SearchTraceInputInterface;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -14,31 +16,62 @@ import tree.SearchState;
 import tree.SearchTree;
 import tree.Variable;
 import validate.OperatorPropertyValidator;
+import detector.InitApplicableDetector;
+import detector.NotInitApplicableDetector;
+import detector.OfflinePropertyDetectorInterface;
+import detector.OnlinePropertyDetectorInterface;
+import detector.PrivatelyDependentDetector;
+import detector.PrivatelyDeterministicDetector;
 import detector.PrivatelyDifferentStateDetectorInterface;
+import detector.PrivatelyIndependentDetector;
+import detector.PrivatelyNondeterministicDetector;
 import detector.ProjectedHeuristicPrivatelyDifferentDetector;
 
 public class PrivacyAnalysisOffline {
 
 	public static void main(String[] args) {
+		//set up assumptions
+		EnumSet<EnumAlgorithmAssumptions> assumptions = EnumSet.of(
+				EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC,
+				EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
+				);
 		
-		
+		//prepare detectors
 		List<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors = new LinkedList<>();
+		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector(assumptions));
 		
-		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector());
+		List<OnlinePropertyDetectorInterface> onlinePropertyDetectors = new LinkedList<>();
+		onlinePropertyDetectors.add(new PrivatelyDependentDetector());
+		onlinePropertyDetectors.add(new InitApplicableDetector());
+		onlinePropertyDetectors.add(new PrivatelyNondeterministicDetector());
+		onlinePropertyDetectors.add(new PrivatelyIndependentDetector(privatelyDifferentStateDetectors));
 		
-		String traceDirectory = args[0];
+		List<OfflinePropertyDetectorInterface> offlinePropertyDetectors = new LinkedList<>();
+		offlinePropertyDetectors.add(new NotInitApplicableDetector());
+		offlinePropertyDetectors.add(new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors));
+		
+		//prepare the search tree structure
 		int analyzedAgentID = Integer.parseInt(args[1]);
 		
 		final SearchTree tree = new SearchTree(analyzedAgentID);
-		final Algorithm algorithm = new Algorithm(tree,analyzedAgentID,privatelyDifferentStateDetectors);
+		final Algorithm algorithm = new Algorithm(
+				tree,
+				analyzedAgentID,
+				assumptions,
+				onlinePropertyDetectors,
+				offlinePropertyDetectors,
+				privatelyDifferentStateDetectors
+				);
 		
-		InputJSONReader reader = new InputJSONReader();
-		
+		//check the trace files
 		int numOfTraces = 0;
+		String traceDirectory = args[0];
 		for(String fileName : new File(traceDirectory).list()){
 			if(fileName.startsWith("agent") && fileName.endsWith(".json")) numOfTraces++;
 		}
 		
+		//read all the traces and process online
+		InputJSONReader reader = new InputJSONReader();
 		
 		for(int i = 0; i < numOfTraces; ++i){
 			if(i == analyzedAgentID) continue;
@@ -95,12 +128,8 @@ public class PrivacyAnalysisOffline {
 		OperatorPropertyValidator validator = new OperatorPropertyValidator(analyzedAgentID);
 		
 		//TODO: this could be done better
-		validator.addPropertyDetector(algorithm.deDetector);
-		validator.addPropertyDetector(algorithm.iaDetector);
-		validator.addPropertyDetector(algorithm.niaDetector);
-		validator.addPropertyDetector(algorithm.noDetector);
-		validator.addPropertyDetector(algorithm.pdDetector);
-		validator.addPropertyDetector(algorithm.piDetector);
+		validator.addOnlinePropertyDetectors(onlinePropertyDetectors);
+		validator.addOfflinePropertyDetectors(offlinePropertyDetectors);
 		
 		reader.readJSONFileOffline(traceDirectory+"/"+"agent"+analyzedAgentID+".json",validator);
 		

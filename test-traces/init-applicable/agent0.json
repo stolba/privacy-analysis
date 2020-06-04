@@ -1,0 +1,23 @@
+{
+
+"variables":[
+{"agentID":0,"varID":0,"varName":"varPub","isPrivate":false,"range":2,"vals": {"0":"T","1":"F"}}
+],
+
+"operators":[
+{"agentID":0,"ownerID":1,"opName":"op-init-applicable","isPrivate":false,"opID":0,"cost":1,"pre": {"0":0},"eff": {"0":0}},
+{"agentID":0,"ownerID":1,"opName":"op-not-init-applicable","isPrivate":false,"opID":1,"cost":1,"pre": {"0":0},"eff": {"0":1}}
+],
+
+"states":[
+{"agentID":0,"senderID":-1,"stateID":0,"parentID":-1,"iparentID":-1,"cost":0,"heuristic":-1,"privateIDs": [0,0],"values": [0],"context":"init"},
+{"agentID":0,"senderID":1,"stateID":1,"parentID":-1,"iparentID":0,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [0],"context":"received"},
+{"agentID":0,"senderID":0,"stateID":2,"parentID":1,"iparentID":-1,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [0],"context":"sent"},
+{"agentID":0,"senderID":1,"stateID":3,"parentID":-1,"iparentID":2,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [1],"context":"received"}
+],
+
+"plan":[
+"op-init-applicable ",
+"op-not-init-applicable"
+]
+}

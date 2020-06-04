@@ -1,10 +1,10 @@
 Minimize
-  obj: complete_mission + survey_locationl1
+  obj: op_not_init_applicable + op_init_applicable
 Subject To
-complete_mission = 1
+op_not_init_applicable + op_init_applicable = 1
 
 Binary
- complete_mission
- survey_locationl1
+ op_not_init_applicable
+ op_init_applicable
 
 End

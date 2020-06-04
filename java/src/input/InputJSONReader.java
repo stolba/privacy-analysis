@@ -8,7 +8,6 @@ import java.util.Map;
 
 import tree.Operator;
 import tree.SearchState;
-import tree.SearchTree;
 import tree.Variable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

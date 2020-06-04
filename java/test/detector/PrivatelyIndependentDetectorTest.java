@@ -2,6 +2,7 @@ package detector;
 
 import static org.junit.Assert.*;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import input.InputJSONReader;
 
 import org.junit.Test;
 
+import analysis.EnumAlgorithmAssumptions;
 import analysis.OperatorSet;
 import tree.Operator;
 import tree.SearchState;
@@ -25,9 +27,12 @@ public class PrivatelyIndependentDetectorTest {
 
 	@Test
 	public void test() {
+		EnumSet<EnumAlgorithmAssumptions> assumptions = EnumSet.of(EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC,EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION);
+		
+		
 		List<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors = new LinkedList<>();
 		
-		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector());
+		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector(assumptions));
 		
 		PrivatelyIndependentDetector detector = new PrivatelyIndependentDetector(privatelyDifferentStateDetectors);
 		
