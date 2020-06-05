@@ -122,6 +122,8 @@ public class PrivacyAnalysisOffline {
 			}
 		}
 		
+		System.out.println("-----");
+		
 		//validation
 		System.out.println("read for validation...");
 		reader = new InputJSONReader();
@@ -145,6 +147,8 @@ public class PrivacyAnalysisOffline {
 		}else{
 			System.out.println("The found properties are NOT VALID!");
 		}
+		
+		System.out.println("-----");
 		
 		System.out.println("compute LP...");
 		LPPropertiecComputation lpComputation = new LPPropertiecComputation(tree);

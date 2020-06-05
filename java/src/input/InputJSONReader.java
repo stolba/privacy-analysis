@@ -173,9 +173,10 @@ public class InputJSONReader {
 		try {
 			return mapper.readValue(input, Operator.class);
 		} catch (JsonMappingException e) {
-			System.out.println("error reading op: "+input);
+			System.out.println("error reading op: "+input+" - "+e.getMessage());
+			
 		} catch (JsonProcessingException e) {
-			System.out.println("error reading op: "+input);
+			System.out.println("error reading op: "+input+" - "+e.getMessage());
 		}
 		
 		return null;

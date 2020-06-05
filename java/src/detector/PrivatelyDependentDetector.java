@@ -76,17 +76,30 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
 		//find a private variable for which there is exactly one precondition value 
+		
+		
+		
 		for(String var : privateVarIDs){
-			Set<Integer> opValues = new HashSet<>();
+			
+			Set<Integer> preValues = new HashSet<>();
+			
+			boolean emptyPrecondition = false;
 			
 			for(Operator origOp : op.getOriginalOps()){
-				if(origOp.pre.containsKey(var)) opValues.add(origOp.pre.get(var));
+				if(origOp.pre.containsKey(var)){
+					preValues.add(origOp.pre.get(var));
+				}else{
+					//preOp without var in preconditions - applicable in any value
+					emptyPrecondition = true;
+				}
 			}
 			
-			if(opValues.size() == 1){
+			if(!emptyPrecondition && preValues.size() == 1){
 				System.out.println("GT op " + op.opName + " is privately-dependent in " + var);
 				return true;
 			}
+			
+			
 			
 		}
 		return false;

@@ -5,8 +5,9 @@
 ],
 
 "operators":[
-{"agentID":0,"ownerID":0,"opName":"pub2","isPrivate":false,"opID":0,"cost":0,"pre": {"0":1},"eff": {"0":0}},
-{"agentID":0,"ownerID":1,"opName":"privately-independent","isPrivate":false,"opID":1,"cost":1,"pre": {"0":0},"eff": {"0":1}}
+{"agentID":0,"ownerID":1,"opName":"privately-independent","isPrivate":false,"opID":0,"cost":1,"pre": {"0":0},"eff": {"0":1}},
+{"agentID":1,"ownerID":1,"opName":"pub1","isPrivate":false,"opID":1,"cost":0,"pre": {"0":0},"eff": {"0":1}},
+{"agentID":0,"ownerID":0,"opName":"pub2","isPrivate":false,"opID":2,"cost":0,"pre": {"0":1},"eff": {"0":0}},
 ],
 
 "states":[

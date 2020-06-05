@@ -77,7 +77,7 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 		
 	}
 
-	//TODO: we need to consider label non-preserving projection here as well!
+	
 	@Override
 	public void addOperator(Operator op) {
 		if(analyzedAgentID != op.ownerID) return;
