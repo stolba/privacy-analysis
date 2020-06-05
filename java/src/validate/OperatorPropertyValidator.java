@@ -32,6 +32,8 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	
 	private Map<Integer,Operator> opMap = new HashMap<>();
 	
+	private SearchState initState = null;
+	
 	
 	public OperatorPropertyValidator(int analyzedAgentID){
 		this.analyzedAgentID = analyzedAgentID;
@@ -87,11 +89,11 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 			
 			existingOp.addOriginalOp(op);
 			
-			System.out.println("GT: op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
+			System.out.println("GT: op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask));
 			
 		}else{
 			opMap.put(op.hash, op);
-			System.out.println("GT: op " + op.opName + " preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
+			System.out.println("GT: op " + op.opName + " preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask));
 		}
 		
 		groundTruthOpPrivacyProperties.put(op.opID,new HashSet<EnumPrivacyProperty>());
@@ -99,13 +101,33 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 
 	@Override
 	public void addStateSequential(SearchState state) {
-		// TODO Auto-generated method stub
+		if(state.stateID == SearchState.INITIAL_STATE_ID){
+			
+			initState = state;
+			
+		}
 		
 	}
 
 	@Override
 	public void afterAllStatesProcessed() {
-		// TODO Auto-generated method stub
+		//TODO: we should not process all states!
+		
+		System.out.println("GT: afterAllOperatorsProcessed...");
+		for(Operator op : opMap.values()){
+			for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
+				if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
+					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
+					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+				}
+			}
+			for(OfflinePropertyDetectorInterface detector : offlinePropertyDetectors){
+				if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
+					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
+					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+				}
+			}
+		}
 		
 	}
 
@@ -117,21 +139,7 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 
 	@Override
 	public void afterAllOperatorsProcessed() {
-		System.out.println("GT: afterAllOperatorsProcessed...");
-		for(Operator op : opMap.values()){
-			for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
-				if(detector.isGroundTruthProperty(op,privateVarIDs)){
-					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
-					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
-				}
-			}
-			for(OfflinePropertyDetectorInterface detector : offlinePropertyDetectors){
-				if(detector.isGroundTruthProperty(op,privateVarIDs)){
-					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
-					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
-				}
-			}
-		}
+		
 		
 	}
 

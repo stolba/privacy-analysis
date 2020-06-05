@@ -12,7 +12,7 @@ public interface OnlinePropertyDetectorInterface {
 	
 	public Set<OperatorSet> detectPropertyOnline(SearchState relevantState, SearchTree tree);
 	
-	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs);
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState);
 	
 	public EnumPrivacyProperty getPrivacyProperty();
 	

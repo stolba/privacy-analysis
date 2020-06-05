@@ -71,7 +71,7 @@ public class PrivatelyDeterministicDetector implements OfflinePropertyDetectorIn
 
 	
 	@Override
-	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
 		//find a private variable for which there is exactly one effect value 
 		for(String var : privateVarIDs){
 			Set<Integer> opValues = new HashSet<>();

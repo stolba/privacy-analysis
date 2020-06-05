@@ -49,11 +49,11 @@ public class SearchTree{
 			
 			existingOp.addOriginalOp(op);
 			
-			System.out.println("op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
+			System.out.println("op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask));
 			
 		}else{
 			opMap.put(op.hash, op);
-			System.out.println("op " + op.opName + " preMask="+Arrays.toString(op.preMask)+ ",effMask="+Arrays.toString(op.effMask));
+			System.out.println("op " + op.opName + " preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask));
 		}
 		
 		
@@ -82,7 +82,7 @@ public class SearchTree{
 			//find all possibly responsible operators
 			for(Operator op : opMap.values()){
 //				System.out.println("match " + op.opName + ":"+Arrays.toString(op.preMask)+ "->"+Arrays.toString(op.effMask)+" on "+ Arrays.toString(iparent.values)+" --> "+ Arrays.toString(state.values)+"?");
-				if(op.matchTransition(iparent, state)){
+				if(op.matchPublicTransition(iparent, state)){
 					op.matchingTransitions.add(state);
 					state.responsibleOperators.add(op);
 				}

@@ -27,12 +27,12 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 				
 				
 				for(Operator op : tree.getAllOperators()){
-					if(op.applicable(stateWithAllSuccessorsReceived)){
+					if(op.publicApplicable(stateWithAllSuccessorsReceived)){
 						
 						boolean noSuccessor = true;
 						
 						for(SearchState state : stateWithAllSuccessorsReceived.successors){
-							if(op.matchEffects(state)){
+							if(op.matchPublicEffects(state)){
 								noSuccessor = false;
 								break;
 							}
@@ -74,7 +74,7 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 
 	
 	@Override
-	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
 		//find a private variable for which there is exactly one precondition value 
 		for(String var : privateVarIDs){
 			Set<Integer> opValues = new HashSet<>();

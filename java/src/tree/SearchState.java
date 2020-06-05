@@ -11,6 +11,7 @@ public class SearchState {
 	
 	public static final int UNDEFINED_VALUE = -1;
 	public static final int UNDEFINED_STATE_ID = -1;
+	public static final int INITIAL_STATE_ID = 0;
 	
 	public static int numOfPublicVariables = 0;
 	

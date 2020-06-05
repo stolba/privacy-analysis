@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
+import tree.SearchState;
 import tree.SearchTree;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
@@ -12,7 +13,6 @@ import analysis.OperatorSet;
 //TODO: not-init-applicable - to hold, the action must be applicable in the public part of the initial state, otherwise it does not make sense!
 public class NotInitApplicableDetector implements OfflinePropertyDetectorInterface {
 	
-	SearchTree tree;
 
 	@Override
 	public Set<OperatorSet> detectPropertyOffline(
@@ -20,7 +20,6 @@ public class NotInitApplicableDetector implements OfflinePropertyDetectorInterfa
 			Map<EnumPrivacyProperty,Set<OperatorSet>> operatorPropertiesMap
 			) {
 		
-		this.tree = tree;
 		
 		Set<OperatorSet> operatorPropertiesSet = operatorPropertiesMap.get(EnumPrivacyProperty.INIT_APPLICBLE);
 		
@@ -28,7 +27,7 @@ public class NotInitApplicableDetector implements OfflinePropertyDetectorInterfa
 		
 		for(Operator op : tree.getAllOperators()){
 			
-			if(op.applicable(tree.getInitialState())){
+			if(op.publicApplicable(tree.getInitialState())){
 				boolean nia = true;
 			
 				if(operatorPropertiesSet != null){
@@ -62,8 +61,27 @@ public class NotInitApplicableDetector implements OfflinePropertyDetectorInterfa
 
 
 	@Override
-	public boolean isGroundTruthProperty(Operator op, Set<String> privatePropertyIDs) {
-		return !op.applicable(tree.getInitialState());
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
+		//TODO: this needs to be extended to any states which are reachable from the initial state by agent's private actions!
+		
+		
+		boolean match = true;
+		
+		for(String var : privateVarIDs){
+			if(op.pre.containsKey(var)){
+				int preValue = op.pre.get(var);
+				int varOrd = Integer.parseInt(var);
+				int stateVal = initState.values[varOrd];
+				
+				if(preValue != stateVal){
+					match = false;
+					break;
+				}
+			}
+		}
+		
+		
+		return !match;
 	}
 
 

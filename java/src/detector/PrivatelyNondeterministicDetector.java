@@ -50,7 +50,7 @@ public class PrivatelyNondeterministicDetector implements
 
 	
 	@Override
-	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs) {
+	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
 		//find a private variable for which there is more than one effect value 
 		//or more then one private variable in the effect
 		int numOfDistinctPrivateVarEffects = 0;

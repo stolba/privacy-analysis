@@ -19,8 +19,8 @@ public class Operator {
 	public String label;
 	public int hash;
 	
-	public int[] preMask;
-	public int[] effMask;
+	public int[] publicPreMask;
+	public int[] publicEffMask;
 	
 	private Set<Integer> originalOpIDs = new HashSet<>();
 	private Set<Operator> originalOps = new HashSet<>();
@@ -32,56 +32,56 @@ public class Operator {
 	}
 	
 	public void generatePublicLabelAndHash(){
-		preMask = new int[SearchState.numOfPublicVariables];
-		effMask = new int[SearchState.numOfPublicVariables];
+		publicPreMask = new int[SearchState.numOfPublicVariables];
+		publicEffMask = new int[SearchState.numOfPublicVariables];
 		
 		for(int var = 0; var < SearchState.numOfPublicVariables; var++){
 			Integer val = pre.get(Integer.toString(var));
 			if(val != null){
-				preMask[var] = val;
+				publicPreMask[var] = val;
 			}else{
-				preMask[var] = SearchState.UNDEFINED_VALUE;
+				publicPreMask[var] = SearchState.UNDEFINED_VALUE;
 			}
 			
 			val = eff.get(Integer.toString(var));
 			if(val != null){
-				effMask[var] = val;
+				publicEffMask[var] = val;
 			}else{
-				effMask[var] = SearchState.UNDEFINED_VALUE;
+				publicEffMask[var] = SearchState.UNDEFINED_VALUE;
 			}
 		}
 		
-		label = Arrays.toString(preMask)+ "->"+Arrays.toString(effMask);
+		label = Arrays.toString(publicPreMask)+ "->"+Arrays.toString(publicEffMask);
 		hash = label.hashCode();
 	}
 	
 	
-	public boolean matchTransition(SearchState parent, SearchState state){
-		for(int i = 0; i < preMask.length; i++){
-			if(preMask[i] != SearchState.UNDEFINED_VALUE){
-				if(parent.values[i] != preMask[i]) return false;
+	public boolean matchPublicTransition(SearchState parent, SearchState state){
+		for(int i = 0; i < publicPreMask.length; i++){
+			if(publicPreMask[i] != SearchState.UNDEFINED_VALUE){
+				if(parent.values[i] != publicPreMask[i]) return false;
 			}
-			if(effMask[i] != SearchState.UNDEFINED_VALUE){
-				if(state.values[i] != effMask[i]) return false;
-			}
-		}
-		return true;
-	}
-	
-	
-	public boolean applicable(SearchState state){
-		for(int i = 0; i < preMask.length; i++){
-			if(preMask[i] != SearchState.UNDEFINED_VALUE){
-				if(state.values[i] != preMask[i]) return false;
+			if(publicEffMask[i] != SearchState.UNDEFINED_VALUE){
+				if(state.values[i] != publicEffMask[i]) return false;
 			}
 		}
 		return true;
 	}
 	
-	public boolean matchEffects(SearchState state){
-		for(int i = 0; i < effMask.length; i++){
-			if(effMask[i] != SearchState.UNDEFINED_VALUE){
-				if(state.values[i] != effMask[i]) return false;
+	
+	public boolean publicApplicable(SearchState state){
+		for(int i = 0; i < publicPreMask.length; i++){
+			if(publicPreMask[i] != SearchState.UNDEFINED_VALUE){
+				if(state.values[i] != publicPreMask[i]) return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean matchPublicEffects(SearchState state){
+		for(int i = 0; i < publicEffMask.length; i++){
+			if(publicEffMask[i] != SearchState.UNDEFINED_VALUE){
+				if(state.values[i] != publicEffMask[i]) return false;
 			}
 		}
 		return true;

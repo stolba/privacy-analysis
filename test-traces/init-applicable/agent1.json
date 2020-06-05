@@ -11,10 +11,10 @@
 ],
 
 "states":[
-{"agentID":0,"senderID":-1,"stateID":0,"parentID":-1,"iparentID":-1,"cost":0,"heuristic":-1,"privateIDs": [0,0],"values": [0,0],"context":"init"},
-{"agentID":0,"senderID":1,"stateID":1,"parentID":0,"iparentID":-1,"cost":1,"heuristic":3,"privateIDs": [0,0],"values": [0,1],"context":"sent"},
-{"agentID":0,"senderID":0,"stateID":2,"parentID":-1,"iparentID":1,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [0,1],"context":"received"},
-{"agentID":0,"senderID":1,"stateID":3,"parentID":2,"iparentID":-1,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [1,1],"context":"sent"}
+{"agentID":1,"senderID":-1,"stateID":0,"parentID":-1,"iparentID":-1,"cost":0,"heuristic":-1,"privateIDs": [0,0],"values": [0,0],"context":"init"},
+{"agentID":1,"senderID":1,"stateID":1,"parentID":0,"iparentID":-1,"cost":1,"heuristic":3,"privateIDs": [0,0],"values": [0,1],"context":"sent"},
+{"agentID":1,"senderID":0,"stateID":2,"parentID":-1,"iparentID":1,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [0,1],"context":"received"},
+{"agentID":1,"senderID":1,"stateID":3,"parentID":2,"iparentID":-1,"cost":2,"heuristic":3,"privateIDs": [0,0],"values": [1,1],"context":"sent"}
 ],
 
 "plan":[
