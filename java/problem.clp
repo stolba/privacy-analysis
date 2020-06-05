@@ -1,10 +1,10 @@
 Minimize
-  obj: op_not_init_applicable + op_init_applicable
+  obj: privately_deterministic + pub2
 Subject To
-op_not_init_applicable + op_init_applicable = 1
+privately_deterministic = 1
 
 Binary
- op_not_init_applicable
- op_init_applicable
+ privately_deterministic
+ pub2
 
 End
