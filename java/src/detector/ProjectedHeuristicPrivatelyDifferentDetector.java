@@ -17,6 +17,8 @@ public class ProjectedHeuristicPrivatelyDifferentDetector implements
 
 	@Override
 	public boolean privatelyDifferent(SearchState s1, SearchState s2) {
+		if(!applicable) return false;
+		
 		return s1.heuristic != s2.heuristic;
 	}
 

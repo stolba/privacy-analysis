@@ -4,7 +4,6 @@ import input.InputJSONReader;
 import input.SearchTraceInputInterface;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +15,7 @@ import tree.SearchState;
 import tree.SearchTree;
 import tree.Variable;
 import validate.OperatorPropertyValidator;
+import detector.EqualPrivatePartsPrivatelyDifferentDetector;
 import detector.InitApplicableDetector;
 import detector.NotInitApplicableDetector;
 import detector.OfflinePropertyDetectorInterface;
@@ -39,6 +39,7 @@ public class PrivacyAnalysisOffline {
 		//prepare detectors
 		List<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors = new LinkedList<>();
 		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector(assumptions));
+		privatelyDifferentStateDetectors.add(new EqualPrivatePartsPrivatelyDifferentDetector());
 		
 		List<OnlinePropertyDetectorInterface> onlinePropertyDetectors = new LinkedList<>();
 		onlinePropertyDetectors.add(new PrivatelyDependentDetector());
