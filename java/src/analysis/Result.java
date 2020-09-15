@@ -64,14 +64,14 @@ public class Result {
 	
 	
 	public String toString(){
-		String result = header + "," +traceDir + "," +agentID + "," +heuristic + "," +whichStates + "," +whenSending + "," ;
+		String result = header + "," +traceDir + "," +agentID + "," +heuristic + "," +whichStates + "," +whenSending + "," + valid + ",";
 		
 		int i = 0;
 		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
 			int resultValue = resultValues.containsKey(prop) ? resultValues.get(prop) : 0;
 			int groundTruthValue = groundTruth.containsKey(prop) ? groundTruth.get(prop) : 0;
 			
-			result = result + "," + prop + "," + resultValue + "," + groundTruthValue;
+			result = result +  prop + "," + resultValue + "," + groundTruthValue;
 			
 			if(i<EnumPrivacyProperty.values().length){
 				result+=",";

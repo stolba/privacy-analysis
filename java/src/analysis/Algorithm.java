@@ -73,7 +73,7 @@ public class Algorithm{
 		//process received state
 		if(state.senderID == analyzedAgentID){
 			
-			System.out.println("Algorithm processing state: "+state);
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("Algorithm processing state: "+state);
 			
 			//detect whether all successors of the current i-parent were received
 			if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION)){

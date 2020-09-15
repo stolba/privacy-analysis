@@ -30,6 +30,8 @@ import detector.PrivatelyNondeterministicDetector;
 import detector.ProjectedHeuristicPrivatelyDifferentDetector;
 
 public class PrivacyAnalysisOffline {
+	
+	public static final boolean VERBOSE = false;
 
 	/**
 	 * 
@@ -49,6 +51,8 @@ public class PrivacyAnalysisOffline {
 			System.out.println("0 - header, 1 - trace directory, 2 - agentID, 3 - heuristic (proj/ma/uniform-cp/uniform-cp-sec), 4 - which states (states-all/states-relevant/states-macro), 5 - when sending (send-extract/send-create), 6 - output file");
 			throw new InvalidAttributesException(args.toString());
 		}
+		
+		
 		
 		
 		//set up assumptions
@@ -209,7 +213,7 @@ public class PrivacyAnalysisOffline {
 				
 				lpComputation.prepareLP(algorithm.getOperatorPropertiesSet(prop));
 				
-				System.out.println(lpComputation.getFullLP());
+				if(VERBOSE) System.out.println(lpComputation.getFullLP());
 				
 				Set<String> operators = lpComputation.computeLP();
 				

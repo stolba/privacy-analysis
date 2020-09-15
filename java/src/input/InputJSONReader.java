@@ -9,6 +9,7 @@ import java.util.Map;
 import tree.Operator;
 import tree.SearchState;
 import tree.Variable;
+import analysis.PrivacyAnalysisOffline;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -98,7 +99,7 @@ public class InputJSONReader {
 		
 		
 			if(readingState == ReadingState.VARIABLES){
-				System.out.println("read var: "+line);
+				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("read var: "+line);
 				
 				Variable var = readVariable(line);
 				
@@ -111,7 +112,7 @@ public class InputJSONReader {
 			}
 			
 			if(readingState == ReadingState.OPERATORS){
-				System.out.println("read op: "+line);
+				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("read op: "+line);
 				
 				Operator op = readOperator(line);
 				
@@ -124,7 +125,7 @@ public class InputJSONReader {
 			}
 			
 			if(readingState == ReadingState.STATES){
-				System.out.println("read state: "+line);
+				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("read state: "+line);
 				
 				SearchState searchState = readSearchState(line);
 				
@@ -149,9 +150,9 @@ public class InputJSONReader {
 		try {
 			return mapper.readValue(input, SearchState.class);
 		} catch (JsonMappingException e) {
-			System.out.println("error reading state: "+input);
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("error reading state: "+input);
 		} catch (JsonProcessingException e) {
-			System.out.println("error reading state: "+input);
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("error reading state: "+input);
 		}
 		
 		return null;
@@ -161,9 +162,9 @@ public class InputJSONReader {
 		try {
 			return mapper.readValue(input, Variable.class);
 		} catch (JsonMappingException e) {
-			System.out.println("error reading var: "+input);
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("error reading var: "+input);
 		} catch (JsonProcessingException e) {
-			System.out.println("error reading var: "+input);
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("error reading var: "+input);
 		}
 		
 		return null;
@@ -173,10 +174,10 @@ public class InputJSONReader {
 		try {
 			return mapper.readValue(input, Operator.class);
 		} catch (JsonMappingException e) {
-			System.out.println("error reading op: "+input+" - "+e.getMessage());
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("error reading op: "+input+" - "+e.getMessage());
 			
 		} catch (JsonProcessingException e) {
-			System.out.println("error reading op: "+input+" - "+e.getMessage());
+			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("error reading op: "+input+" - "+e.getMessage());
 		}
 		
 		return null;
