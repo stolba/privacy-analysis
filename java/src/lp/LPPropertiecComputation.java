@@ -70,6 +70,10 @@ public class LPPropertiecComputation {
 		
 	}
 	
+	public String getFullLP(){
+		return LP;
+	}
+	
 	private String getLPVar(Operator op){
 //		return "op"+op.hash;
 		return op.opName.replace(" ", "").replace("-", "_");

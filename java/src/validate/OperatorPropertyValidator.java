@@ -16,6 +16,7 @@ import tree.SearchState;
 import tree.Variable;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
+import analysis.Result;
 import detector.OfflinePropertyDetectorInterface;
 import detector.OnlinePropertyDetectorInterface;
 
@@ -141,6 +142,14 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	public void afterAllOperatorsProcessed() {
 		
 		
+	}
+	
+	public void writeGroundTruthResults(Result result){
+		for(Integer opID: groundTruthOpPrivacyProperties.keySet()){
+			for(EnumPrivacyProperty prop : groundTruthOpPrivacyProperties.get(opID)){
+				result.increaseGroundTruthCount(prop);
+			}
+		}
 	}
 
 }

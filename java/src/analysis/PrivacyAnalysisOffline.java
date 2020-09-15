@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.naming.directory.InvalidAttributesException;
+
 import lp.LPPropertiecComputation;
 import tree.Operator;
 import tree.SearchState;
@@ -29,12 +31,51 @@ import detector.ProjectedHeuristicPrivatelyDifferentDetector;
 
 public class PrivacyAnalysisOffline {
 
-	public static void main(String[] args) {
+	/**
+	 * 
+	 * @param args:
+	 * 0 - header
+	 * 1 - trace directory
+	 * 2 - agentID
+	 * 3 - heuristic (proj/ma/uniform-cp/uniform-cp-sec)
+	 * 4 - which states (states-all/states-relevant/states-macro)
+	 * 5 - when sending (send-extract/send-create)
+	 * 6 - output file
+	 * @throws InvalidAttributesException 
+	 */
+	public static void main(String[] args) throws InvalidAttributesException {
+		
+		if(args.length < 6){
+			System.out.println("0 - header, 1 - trace directory, 2 - agentID, 3 - heuristic (proj/ma/uniform-cp/uniform-cp-sec), 4 - which states (states-all/states-relevant/states-macro), 5 - when sending (send-extract/send-create), 6 - output file");
+			throw new InvalidAttributesException(args.toString());
+		}
+		
+		
 		//set up assumptions
-		EnumSet<EnumAlgorithmAssumptions> assumptions = EnumSet.of(
-				EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC,
-				EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
-				);
+		EnumSet<EnumAlgorithmAssumptions> assumptions;
+		
+		if(args[3].equals("proj")){
+			if(args[5].equals("send-create")){
+				assumptions = EnumSet.of(
+						EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC,
+						EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
+						);
+			}else{
+				assumptions = EnumSet.of(
+						EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC
+						);
+			}
+		}else{
+			if(args[5].equals("send-create")){
+				assumptions = EnumSet.of(
+						EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
+						);
+			}else{
+				assumptions = EnumSet.noneOf(EnumAlgorithmAssumptions.class);
+			}
+		}
+		
+		
 		
 		//prepare detectors
 		List<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors = new LinkedList<>();
@@ -51,8 +92,11 @@ public class PrivacyAnalysisOffline {
 		offlinePropertyDetectors.add(new NotInitApplicableDetector());
 		offlinePropertyDetectors.add(new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors));
 		
+		//prepare the result structure
+		Result result = new Result(args);
+		
 		//prepare the search tree structure
-		int analyzedAgentID = Integer.parseInt(args[1]);
+		int analyzedAgentID = Integer.parseInt(args[2]);
 		
 		final SearchTree tree = new SearchTree(analyzedAgentID);
 		final Algorithm algorithm = new Algorithm(
@@ -66,7 +110,7 @@ public class PrivacyAnalysisOffline {
 		
 		//check the trace files
 		int numOfTraces = 0;
-		String traceDirectory = args[0];
+		String traceDirectory = args[1];
 		for(String fileName : new File(traceDirectory).list()){
 			if(fileName.startsWith("agent") && fileName.endsWith(".json")) numOfTraces++;
 		}
@@ -116,6 +160,8 @@ public class PrivacyAnalysisOffline {
 			});
 		}
 		
+		System.out.println("-----");
+		
 		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
 			for(OperatorSet os : algorithm.getOperatorPropertiesSet(prop)){
 				System.out.println("operators "+os.privacyProperty+": " + os);
@@ -145,9 +191,12 @@ public class PrivacyAnalysisOffline {
 		
 		if(validAll){
 			System.out.println("The found properties are VALID");
+			result.setAllValid();
 		}else{
 			System.out.println("The found properties are NOT VALID!");
 		}
+		
+		validator.writeGroundTruthResults(result);
 		
 		System.out.println("-----");
 		
@@ -159,12 +208,25 @@ public class PrivacyAnalysisOffline {
 				System.out.println("\ncompute LP for " + prop);
 				
 				lpComputation.prepareLP(algorithm.getOperatorPropertiesSet(prop));
+				
+				System.out.println(lpComputation.getFullLP());
+				
 				Set<String> operators = lpComputation.computeLP();
 				
 				System.out.println(prop + " operators: " + operators);
 				System.out.println(prop + " value = " + operators.size());
+				
+				result.writePropertyCount(prop, operators.size());
+			}else{
+				System.out.println("\nno operators for " + prop);
 			}
 		}
+		
+		System.out.println("-----");
+		
+		System.out.println(result);
+		
+		result.writeFile(args[6]);
 
 	}
 
