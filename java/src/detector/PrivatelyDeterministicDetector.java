@@ -72,7 +72,7 @@ public class PrivatelyDeterministicDetector implements OfflinePropertyDetectorIn
 	
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
-		//find a private variable for which there is exactly one effect value 
+		//find a private variable for which there is exactly one or none effect value 
 		for(String var : privateVarIDs){
 			Set<Integer> opValues = new HashSet<>();
 			
@@ -80,7 +80,7 @@ public class PrivatelyDeterministicDetector implements OfflinePropertyDetectorIn
 				if(origOp.eff.containsKey(var)) opValues.add(origOp.eff.get(var));
 			}
 			
-			if(opValues.size() == 1 ){
+			if(opValues.size() == 1 || opValues.size() == 0 ){
 				System.out.println("GT op " + op.opName + " is privately-deterministic in " + var);
 				return true;
 			}
