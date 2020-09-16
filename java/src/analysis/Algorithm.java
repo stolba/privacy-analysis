@@ -77,6 +77,10 @@ public class Algorithm{
 			
 			//detect whether all successors of the current i-parent were received
 			if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION)){
+				
+				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("previous received state: " + tree.getPreviousReceivedState());
+				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("state: " + state);
+				
 				if(tree.getPreviousReceivedState() !=null && tree.getPreviousReceivedState().iparentID != state.iparentID){
 					SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(tree.getPreviousReceivedState().iparentID);
 					if(stateWithAllSuccessorsReceived != null){

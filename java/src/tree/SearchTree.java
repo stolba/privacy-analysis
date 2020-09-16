@@ -89,8 +89,14 @@ public class SearchTree{
 				
 			}
 			
-			previousReceivedState = state;
 			
+			
+		}
+	}
+	
+	public void setPreviousReceivedState(SearchState state) {
+		if(state.iparentID != SearchState.UNDEFINED_STATE_ID){
+			previousReceivedState = state;
 		}
 	}
 	
@@ -140,6 +146,9 @@ public class SearchTree{
 	public Collection<SearchState> getReceivedStates() {
 		return receivedStateMap.values();
 	}
+
+
+	
 
 
 	

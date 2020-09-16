@@ -54,15 +54,22 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 		for(OperatorSet ops : operatorPropertiesSet){
 			EnumPrivacyProperty property = ops.privacyProperty;
 			
-			//TODO: we need to handle the label non-preserving abstraction and test all IDs in originalOpIDs
 			for(Operator op : ops){
-				if(!groundTruthOpPrivacyProperties.containsKey(op.opID)){
-					System.out.println("WARN: operator "+op.opName + " was not part of the processed search trace.");
-				}else if (!groundTruthOpPrivacyProperties.get(op.opID).contains(property)){
-					System.out.println("WARN: operator "+op.opName + " has the property " + property + ", but it should not be the case according to the ground truth!");
+				boolean atLeastOneOriginalOpValid = false;
+				
+				for(Operator originalOp : op.getOriginalOps()){
+					if(!groundTruthOpPrivacyProperties.containsKey(originalOp.opID)){
+						System.out.println("WARN: operator "+originalOp.opName + " was not part of the processed search trace.");
+					}else if (groundTruthOpPrivacyProperties.get(originalOp.opID).contains(property)){
+						atLeastOneOriginalOpValid = true;
+					}
+				}
+				
+				if(!atLeastOneOriginalOpValid){
+					System.out.println("WARN: operator "+op + " has the property " + property + ", but it should not be the case according to the ground truth!");
 					valid = false;
 				}
-			}
+			} 
 		}
 		
 		return valid;
@@ -115,17 +122,19 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 		//TODO: we should not process all states!
 		
 		System.out.println("GT: afterAllOperatorsProcessed...");
-		for(Operator op : opMap.values()){
-			for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
-				if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
-					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
-					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+		for(Operator projectedOp : opMap.values()){
+			for(Operator op : projectedOp.getOriginalOps()){
+				for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
+					if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
+						groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
+						groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+					}
 				}
-			}
-			for(OfflinePropertyDetectorInterface detector : offlinePropertyDetectors){
-				if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
-					groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
-					groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+				for(OfflinePropertyDetectorInterface detector : offlinePropertyDetectors){
+					if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
+						groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
+						groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
+					}
 				}
 			}
 		}

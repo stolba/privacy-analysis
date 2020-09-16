@@ -105,7 +105,7 @@ public class Operator {
 
 	@Override
 	public String toString() {
-		return "Operator [opName=" + opName + "]";
+		return "Operator [opName=" + opName + ", originalOps="+ originalOps.size()+ "]";
 	}
 	
 	

@@ -26,7 +26,7 @@
   <constraint name="c1" index="0" slack="0"/>
  </linearConstraints>
  <variables>
-  <variable name="pub1" index="0" value="1"/>
+  <variable name="pub2" index="0" value="1"/>
   <variable name="privately_dependent" index="1" value="0"/>
  </variables>
 </CPLEXSolution>

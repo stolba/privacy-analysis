@@ -1,10 +1,10 @@
 Minimize
-  obj: pub1 + privately_dependent
+  obj: pub2 + privately_dependent
 Subject To
-pub1 + privately_dependent = 1
+pub2 = 1
 
 Binary
- pub1
+ pub2
  privately_dependent
 
 End

@@ -154,6 +154,7 @@ public class PrivacyAnalysisOffline {
 				public void addStateSequential(SearchState state) {
 					tree.addState(state);
 					algorithm.processStateOnline(state);
+					tree.setPreviousReceivedState(state);
 				}
 				
 				@Override

@@ -5,16 +5,17 @@
 ],
 
 "operators":[
-{"agentID":0,"ownerID":1,"opName":"privately-dependent","isPrivate":false,"opID":0,"cost":1,"pre": {"0":0},"eff": {"0":1}},
-{"agentID":0,"ownerID":1,"opName":"pub1","isPrivate":false,"opID":1,"cost":0,"pre": {"0":0,"1":0},"eff": {"0":1,"1":1}},
-{"agentID":0,"ownerID":0,"opName":"pub2","isPrivate":false,"opID":2,"cost":0,"pre": {"0":1},"eff": {"0":0}}
+{"agentID":0,"ownerID":1,"opName":"privately-dependent","isPrivate":false,"opID":0,"cost":1,"pre": {"0":1},"eff": {"0":1}},
+{"agentID":0,"ownerID":0,"opName":"pub1","isPrivate":false,"opID":1,"cost":0,"pre": {"0":0},"eff": {"0":1}},
+{"agentID":0,"ownerID":1,"opName":"pub2","isPrivate":false,"opID":2,"cost":0,"pre": {"0":1},"eff": {"0":0}}
 ],
 
 "states":[
 {"agentID":0,"senderID":-1,"stateID":0,"parentID":-1,"iparentID":-1,"cost":0,"heuristic":5,"privateIDs": [0,0],"values": [0],"context":"init"},
-{"agentID":0,"senderID":1,"stateID":1,"parentID":-1,"iparentID":0,"cost":0,"heuristic":4,"privateIDs": [0,1],"values": [1],"context":"received"},
-{"agentID":0,"senderID":0,"stateID":2,"parentID":1,"iparentID":-1,"cost":0,"heuristic":3,"privateIDs": [1,1],"values": [0],"context":"sent"},
-{"agentID":0,"senderID":1,"stateID":3,"parentID":-1,"iparentID":2,"cost":1,"heuristic":2,"privateIDs": [1,2],"values": [1],"context":"received"}
+{"agentID":0,"senderID":0,"stateID":1,"parentID":0,"iparentID":-1,"cost":0,"heuristic":4,"privateIDs": [1,0],"values": [1],"context":"sent"},
+{"agentID":0,"senderID":1,"stateID":2,"parentID":-1,"iparentID":1,"cost":0,"heuristic":3,"privateIDs": [1,1],"values": [0],"context":"received"},
+{"agentID":0,"senderID":0,"stateID":3,"parentID":2,"iparentID":-1,"cost":0,"heuristic":2,"privateIDs": [2,1],"values": [1],"context":"sent"},
+{"agentID":0,"senderID":1,"stateID":4,"parentID":-1,"iparentID":3,"cost":0,"heuristic":1,"privateIDs": [2,2],"values": [0],"context":"received"}
 ],
 
 "plan":[
