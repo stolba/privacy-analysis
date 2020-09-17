@@ -41,6 +41,8 @@ public class SearchTree{
 		// We are interested in projected operators of analyzedAgentID
 		if(analyzedAgentID != op.ownerID) return;
 		
+		if(op.pre == null) op.pre = new HashMap<>();
+		if(op.eff == null) op.eff = new HashMap<>();
 		
 		op.generatePublicLabelAndHash();
 		
