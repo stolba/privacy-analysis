@@ -44,26 +44,29 @@ public class InitApplicableDetector implements OnlinePropertyDetectorInterface {
 
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
-		//TODO: this needs to be extended to any states which are reachable from the initial state by agent's private actions!
+		
+		return true;
 		
 		
-		boolean match = true;
-		
-		for(String var : privateVarIDs){
-			if(op.pre.containsKey(var)){
-				int preValue = op.pre.get(var);
-				int varOrd = Integer.parseInt(var);
-				int stateVal = initState.values[varOrd];
-				
-				if(preValue != stateVal){
-					match = false;
-					break;
-				}
-			}
-		}
-		
-		
-		return match;
+//		//TODO: this needs to be extended to any states which are reachable from the initial state by agent's private actions!
+//		
+//		boolean match = true;
+//		
+//		for(String var : privateVarIDs){
+//			if(op.pre.containsKey(var)){
+//				int preValue = op.pre.get(var);
+//				int varOrd = Integer.parseInt(var);
+//				int stateVal = initState.values[varOrd];
+//				
+//				if(preValue != stateVal){
+//					match = false;
+//					break;
+//				}
+//			}
+//		}
+//		
+//		
+//		return match;
 	}
 
 
