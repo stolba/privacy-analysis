@@ -63,7 +63,13 @@ public class PrivatelyNondeterministicDetector implements
 			Set<Integer> opValues = new HashSet<>();
 			
 			for(Operator origOp : op.getOriginalOps()){
-				if(origOp.eff.containsKey(var)) opValues.add(origOp.eff.get(var));
+				if(origOp.eff.containsKey(var)){
+					opValues.add(origOp.eff.get(var));
+				}else{
+					//It is important to represent empty value, because not changing the value and changing the value 
+					//to a single value together creates privately-nondeterministic behaviour
+					opValues.add(-1);
+				}
 			}
 			
 			if(opValues.size() > 1 ){
