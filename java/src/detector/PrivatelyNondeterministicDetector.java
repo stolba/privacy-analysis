@@ -20,6 +20,10 @@ public class PrivatelyNondeterministicDetector implements
 
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
+		//TODO: shouldn't this be in-fact an offline detector?
+		relevantState = tree.getSentState(relevantState.iparentID);
+		if(relevantState == null) return result;
+		
 		//TODO: optimize
 		for(SearchState s1 : relevantState.successors){
 			for(SearchState s2 : relevantState.successors){
@@ -63,7 +67,7 @@ public class PrivatelyNondeterministicDetector implements
 			}
 			
 			if(opValues.size() > 1 ){
-				System.out.println("GT op " + op.opName + " is privately-deterministic in " + var);
+				System.out.println("GT op " + op.opName + " is privately-nondeterministic in " + var);
 				return true;
 			}
 			

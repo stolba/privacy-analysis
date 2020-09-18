@@ -33,28 +33,29 @@ public class PrivatelyDeterministicDetector implements OfflinePropertyDetectorIn
 
 		OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_DETERMINISTIC,false);
 		
-		for(Operator op : tree.getAllOperators()){
-			boolean opIsPubliclyDeterministic = true;
-			
-			for(SearchState s1 : op.matchingTransitions){
-				for(SearchState s2 : op.matchingTransitions){
-					if(!s1.publiclyEquivalent(s2)) continue;
-					
-					if(!s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
-						opIsPubliclyDeterministic = false;
-						break;
-					}
-					
-					if(!opIsPubliclyDeterministic) break;
-					
-				}
-				
-				if(opIsPubliclyDeterministic){
-					opSet.add(op);
-				}
-			}
-			
-		}
+//		for(Operator op : tree.getAllOperators()){
+//			boolean opIsPrivatelyDeterministic = true;
+//			
+//			for(SearchState s1 : op.matchingTransitions){
+//				for(SearchState s2 : op.matchingTransitions){
+//					if(!s1.publiclyEquivalent(s2)) continue;
+//					
+//					//TODO: I don't think I can detect privately-deterministic operators, because privatelyDifferent detects only a subset of actually different states
+//					if(s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
+//						opIsPrivatelyDeterministic = false;
+//						break;
+//					}
+//					
+//					if(!opIsPrivatelyDeterministic) break;
+//					
+//				}
+//				
+//				if(opIsPrivatelyDeterministic){
+//					opSet.add(op);
+//				}
+//			}
+//			
+//		}
 
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		result.add(opSet);

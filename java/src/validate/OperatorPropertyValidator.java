@@ -123,7 +123,8 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 		
 		System.out.println("GT: afterAllOperatorsProcessed...");
 		for(Operator projectedOp : opMap.values()){
-			for(Operator op : projectedOp.getOriginalOps()){
+			Operator op = projectedOp;
+//			for(Operator op : projectedOp.getOriginalOps()){
 				for(OnlinePropertyDetectorInterface detector : onlinePropertyDetectors){
 					if(detector.isGroundTruthProperty(op,privateVarIDs,initState)){
 						groundTruthOpPrivacyProperties.putIfAbsent(op.opID, new HashSet<EnumPrivacyProperty>());
@@ -136,7 +137,7 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 						groundTruthOpPrivacyProperties.get(op.opID).add(detector.getPrivacyProperty());
 					}
 				}
-			}
+//			}
 		}
 		
 	}
