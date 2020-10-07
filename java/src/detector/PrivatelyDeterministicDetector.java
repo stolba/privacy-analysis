@@ -82,7 +82,7 @@ public class PrivatelyDeterministicDetector implements OfflinePropertyDetectorIn
 			}
 			
 			if(opValues.size() == 1 || opValues.size() == 0 ){
-				System.out.println("GT op " + op.opName + " is privately-deterministic in " + var);
+//				System.out.println("GT op " + op.opName + " is privately-deterministic in " + var);
 				return true;
 			}
 			

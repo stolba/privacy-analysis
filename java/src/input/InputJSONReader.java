@@ -43,6 +43,9 @@ public class InputJSONReader {
 		try {
 			reader = new BufferedReader(new FileReader(filename));
 			String line = reader.readLine();
+			
+			int statesProcessed = 0;
+			
 			while (line != null) {
 //				System.out.println(line);
 				Object readObj = readNextLine(line);
@@ -58,6 +61,10 @@ public class InputJSONReader {
 					}
 					if(readObj instanceof SearchState){
 						searchTraceProcessor.addStateSequential((SearchState)readObj);
+						statesProcessed++;
+						if(statesProcessed % 1000 == 0){
+							System.out.println("Processed "+statesProcessed+"states");
+						}
 						
 					}
 				}
@@ -68,6 +75,8 @@ public class InputJSONReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("Processed all states");
 		
 		searchTraceProcessor.afterAllStatesProcessed();
 	}

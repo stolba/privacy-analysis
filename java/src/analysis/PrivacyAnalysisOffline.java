@@ -119,6 +119,8 @@ public class PrivacyAnalysisOffline {
 			if(fileName.startsWith("agent") && fileName.endsWith(".json")) numOfTraces++;
 		}
 		
+		
+		
 		//read all the traces and process online
 		InputJSONReader reader = new InputJSONReader();
 		
@@ -155,6 +157,7 @@ public class PrivacyAnalysisOffline {
 					tree.addState(state);
 					algorithm.processStateOnline(state);
 					tree.setPreviousReceivedState(state);
+					
 				}
 				
 				@Override

@@ -99,7 +99,7 @@ public class Algorithm{
 	private void addOpSet(Set<OperatorSet> osSet){
 		for(OperatorSet os : osSet){
 			if(!os.isEmpty()){
-				System.out.println("Algorithm add operator set: "+os);
+				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("Algorithm add operator set: "+os);
 				
 				if(!operatorPropertiesMap.containsKey(os.privacyProperty)) operatorPropertiesMap.put(os.privacyProperty, new HashSet<OperatorSet>());
 				operatorPropertiesMap.get(os.privacyProperty).add(os);

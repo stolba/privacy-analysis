@@ -42,7 +42,7 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 						
 						
 						if(noSuccessor){
-							System.out.println(op + " is PD because it is publicly applicable but not aplied on " + stateWithAllSuccessorsReceived);
+//							System.out.println(op + " is PD because it is publicly applicable but not aplied on " + stateWithAllSuccessorsReceived);
 							//op is pd
 							opSet.add(op);
 						}
@@ -95,7 +95,7 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 			}
 			
 			if(!emptyPrecondition && preValues.size() == 1){
-				System.out.println("GT op " + op.opName + " is privately-dependent in " + var);
+//				System.out.println("GT op " + op.opName + " is privately-dependent in " + var);
 				return true;
 			}
 			

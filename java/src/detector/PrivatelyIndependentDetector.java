@@ -76,14 +76,14 @@ public class PrivatelyIndependentDetector implements OnlinePropertyDetectorInter
 					opValues.add(origOp.pre.get(var));
 				}else{
 					//origOp does not have var in precondition - it is pi in var
-					System.out.println("GT op " + op.opName + " is privately-independent in " + var);
+//					System.out.println("GT op " + op.opName + " is privately-independent in " + var);
 					return true;
 				}
 			}
 			
 			if(opValues.size() != 1 ){
 				//op has multiple precondition values for var
-				System.out.println("GT op " + op.opName + " is privately-independent in " + var);
+//				System.out.println("GT op " + op.opName + " is privately-independent in " + var);
 				return true;
 			}
 			

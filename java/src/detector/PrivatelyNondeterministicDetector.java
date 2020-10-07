@@ -73,7 +73,7 @@ public class PrivatelyNondeterministicDetector implements
 			}
 			
 			if(opValues.size() > 1 ){
-				System.out.println("GT op " + op.opName + " is privately-nondeterministic in " + var);
+//				System.out.println("GT op " + op.opName + " is privately-nondeterministic in " + var);
 				return true;
 			}
 			
