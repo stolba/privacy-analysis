@@ -51,7 +51,7 @@ public class SearchTree{
 			
 			existingOp.addOriginalOp(op);
 			
-			System.out.println("op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask));
+			System.out.println("op " + op.opName + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask)+ ", op count " + existingOp.getOriginalOps().size());
 			
 		}else{
 			opMap.put(op.hash, op);

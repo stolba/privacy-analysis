@@ -79,6 +79,8 @@ public class PrivacyAnalysisOffline {
 			}
 		}
 		
+		System.out.println("Start analysis...");
+		
 		
 		
 		//prepare detectors
@@ -89,7 +91,7 @@ public class PrivacyAnalysisOffline {
 		List<OnlinePropertyDetectorInterface> onlinePropertyDetectors = new LinkedList<>();
 		onlinePropertyDetectors.add(new PrivatelyDependentDetector());
 		onlinePropertyDetectors.add(new InitApplicableDetector());
-		onlinePropertyDetectors.add(new PrivatelyNondeterministicDetector());
+		onlinePropertyDetectors.add(new PrivatelyNondeterministicDetector(privatelyDifferentStateDetectors));
 		onlinePropertyDetectors.add(new PrivatelyIndependentDetector(privatelyDifferentStateDetectors));
 		
 		List<OfflinePropertyDetectorInterface> offlinePropertyDetectors = new LinkedList<>();

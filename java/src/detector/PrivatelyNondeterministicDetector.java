@@ -1,5 +1,6 @@
 package detector;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,14 @@ import analysis.OperatorSet;
 
 public class PrivatelyNondeterministicDetector implements
 		OnlinePropertyDetectorInterface {
+	
+	private final Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors;
+	
+	public PrivatelyNondeterministicDetector(
+			Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
+		super();
+		this.privatelyDifferentStateDetectors = privatelyDifferentStateDetectors;
+	}
 
 	@Override
 	public Set<OperatorSet> detectPropertyOnline(
@@ -25,9 +34,11 @@ public class PrivatelyNondeterministicDetector implements
 		if(relevantState == null) return result;
 		
 		//TODO: optimize
+		//TODO: s1 and s2 must be publicly equivalent but privately different. Fix also the theorem and write test!
 		for(SearchState s1 : relevantState.successors){
 			for(SearchState s2 : relevantState.successors){
-				if(s1.stateID != s2.stateID){
+				
+				if(s1.publiclyEquivalent(s2) && s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
 					OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC,true);
 					
 					opSet.addAll(s1.responsibleOperators);
