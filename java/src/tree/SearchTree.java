@@ -17,7 +17,7 @@ public class SearchTree{
 	private Map<Integer,SearchState> sentStateMap = new HashMap<>();
 	private Map<Integer,SearchState> receivedStateMap = new HashMap<>();
 	
-	private SearchState previousReceivedState = null;
+	private Map<Integer,SearchState> previousReceivedState = new HashMap<>();
 	private SearchState initState = null;
 	
 	
@@ -98,7 +98,7 @@ public class SearchTree{
 	
 	public void setPreviousReceivedState(SearchState state) {
 		if(state.iparentID != SearchState.UNDEFINED_STATE_ID){
-			previousReceivedState = state;
+			previousReceivedState.put(state.senderID, state);
 		}
 	}
 	
@@ -132,8 +132,8 @@ public class SearchTree{
 		return sentStateMap.get(id);
 	}
 	
-	public SearchState getPreviousReceivedState() {
-		return previousReceivedState;
+	public SearchState getPreviousReceivedState(int senderID) {
+		return previousReceivedState.get(senderID);
 	}
 	
 	public SearchState getInitialState(){

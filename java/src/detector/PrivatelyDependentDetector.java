@@ -18,8 +18,8 @@ public class PrivatelyDependentDetector implements OnlinePropertyDetectorInterfa
 		
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
-		if(tree.getPreviousReceivedState() !=null){
-			SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(tree.getPreviousReceivedState().iparentID);
+		if(tree.getPreviousReceivedState(relevantState.senderID) !=null){
+			SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(tree.getPreviousReceivedState(relevantState.senderID).iparentID);
 			
 			if(stateWithAllSuccessorsReceived != null && stateWithAllSuccessorsReceived.allSuccessorsReceived == true){
 			
