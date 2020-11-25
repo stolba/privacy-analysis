@@ -2,6 +2,7 @@ package detector;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import tree.Operator;
@@ -11,7 +12,7 @@ import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
 public class PrivatelyNondeterministicDetector implements
-		OnlinePropertyDetectorInterface {
+		OfflinePropertyDetectorInterface {
 	
 	private final Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors;
 	
@@ -21,38 +22,68 @@ public class PrivatelyNondeterministicDetector implements
 		this.privatelyDifferentStateDetectors = privatelyDifferentStateDetectors;
 	}
 
+//	@Override
+//	public Set<OperatorSet> detectPropertyOnline(
+//			SearchState relevantState,
+//			SearchTree tree) {
+//		
+//
+//		Set<OperatorSet> result =  new HashSet<OperatorSet>();
+//		
+//		//TODO: shouldn't this be in-fact an offline detector?
+//		relevantState = tree.getSentState(relevantState.iparentID);
+//		if(relevantState == null) return result;
+//		
+//		//TODO: optimize
+//		//TODO: s1 and s2 must be publicly equivalent but privately different. Fix also the theorem and write test!
+//		for(SearchState s1 : relevantState.successors){
+//			for(SearchState s2 : relevantState.successors){
+//				
+//				if(s1.publiclyEquivalent(s2) && s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
+//					OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC,true);
+//					
+//					opSet.addAll(s1.responsibleOperators);
+//					opSet.retainAll(s2.responsibleOperators);
+//					
+//					if(!opSet.isEmpty()){
+//						result.add(opSet);
+//					}
+//				}
+//				
+//			}
+//		}
+//		
+//		return result;
+//	}
+	
 	@Override
-	public Set<OperatorSet> detectPropertyOnline(
-			SearchState relevantState,
-			SearchTree tree) {
+	public Set<OperatorSet> detectPropertyOffline(SearchTree tree,
+			Map<EnumPrivacyProperty, Set<OperatorSet>> operatorPropertiesMap) {
 		
-
+		
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
-		//TODO: shouldn't this be in-fact an offline detector?
-		relevantState = tree.getSentState(relevantState.iparentID);
-		if(relevantState == null) return result;
-		
-		//TODO: optimize
-		//TODO: s1 and s2 must be publicly equivalent but privately different. Fix also the theorem and write test!
-		for(SearchState s1 : relevantState.successors){
-			for(SearchState s2 : relevantState.successors){
-				
-				if(s1.publiclyEquivalent(s2) && s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
-					OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC,true);
+		for(SearchState state : tree.getSentStates()){
+			for(SearchState s1 : state.successors){
+				for(SearchState s2 : state.successors){
 					
-					opSet.addAll(s1.responsibleOperators);
-					opSet.retainAll(s2.responsibleOperators);
-					
-					if(!opSet.isEmpty()){
-						result.add(opSet);
+					if(s1.publiclyEquivalent(s2) && s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
+						OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC,true);
+						
+						opSet.addAll(s1.responsibleOperators);
+						opSet.retainAll(s2.responsibleOperators);
+						
+						if(!opSet.isEmpty()){
+							result.add(opSet);
+						}
 					}
+					
 				}
-				
 			}
 		}
 		
 		return result;
+		
 	}
 
 	
@@ -99,6 +130,8 @@ public class PrivatelyNondeterministicDetector implements
 		}
 		
 	}
+
+	
 
 	
 
