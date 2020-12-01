@@ -22,4 +22,10 @@ public class ProjectedHeuristicPrivatelyDifferentDetector implements
 		return s1.heuristic != s2.heuristic;
 	}
 
+
+	@Override
+	public boolean isApplicable() {
+		return applicable;
+	}
+
 }

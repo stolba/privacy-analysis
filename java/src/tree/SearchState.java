@@ -50,7 +50,7 @@ public class SearchState {
 	public boolean privatelyDifferent(SearchState state, Collection<PrivatelyDifferentStateDetectorInterface> detectors){
 		
 		for(PrivatelyDifferentStateDetectorInterface detector : detectors){
-			boolean privatelyDifferent = detector.privatelyDifferent(this, state);
+			boolean privatelyDifferent = detector.isApplicable() ? detector.privatelyDifferent(this, state) : false;
 			if(privatelyDifferent) return true;
 		}
 		

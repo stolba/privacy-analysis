@@ -28,4 +28,10 @@ public class SuccessorsPrivatelyDifferentDetector implements
 		}
 	}
 
+
+	@Override
+	public boolean isApplicable() {
+		return true;
+	}
+
 }
