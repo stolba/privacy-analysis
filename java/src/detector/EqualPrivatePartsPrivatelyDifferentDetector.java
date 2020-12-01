@@ -5,9 +5,10 @@ import tree.SearchState;
 public class EqualPrivatePartsPrivatelyDifferentDetector implements
 		PrivatelyDifferentStateDetectorInterface {
 	
+	final int analyzedAgentID;
 	
-	public EqualPrivatePartsPrivatelyDifferentDetector(){
-		
+	public EqualPrivatePartsPrivatelyDifferentDetector(int analyzedAgentID){
+		this.analyzedAgentID = analyzedAgentID;
 	}
 			
 
@@ -21,6 +22,10 @@ public class EqualPrivatePartsPrivatelyDifferentDetector implements
 		
 		//this is part of the proposition
 		for(int i = 0; i < s1.privateIDs.length; i++){
+			if(i == analyzedAgentID){
+				if(s1.privateIDs[i] == s2.privateIDs[i]) return false; //the states cannot be different
+				continue;
+			}
 			if(s1.privateIDs[i] != s2.privateIDs[i]) return false;
 		}
 		

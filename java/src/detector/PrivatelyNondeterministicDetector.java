@@ -1,6 +1,7 @@
 package detector;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import tree.Operator;
 import tree.SearchState;
 import tree.SearchTree;
+import analysis.EnumAlgorithmAssumptions;
 import analysis.EnumPrivacyProperty;
 import analysis.OperatorSet;
 
@@ -15,11 +17,13 @@ public class PrivatelyNondeterministicDetector implements
 		OfflinePropertyDetectorInterface {
 	
 	private final Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors;
+	private final EnumSet<EnumAlgorithmAssumptions> assumptions;
 	
 	public PrivatelyNondeterministicDetector(
-			Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors) {
+			Collection<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors, EnumSet<EnumAlgorithmAssumptions> assumptions) {
 		super();
 		this.privatelyDifferentStateDetectors = privatelyDifferentStateDetectors;
+		this.assumptions = assumptions;
 	}
 
 	
@@ -29,6 +33,9 @@ public class PrivatelyNondeterministicDetector implements
 		
 		
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
+		
+		//IS this true? Or is it just that we cannot detect that?
+//		if(!assumptions.contains(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS)) return result;
 		
 		for(SearchState state : tree.getSentStates()){
 			for(SearchState s1 : state.successors){

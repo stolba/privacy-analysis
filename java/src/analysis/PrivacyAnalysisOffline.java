@@ -86,11 +86,13 @@ public class PrivacyAnalysisOffline {
 		System.out.println("Start analysis...");
 		
 		
+		int analyzedAgentID = Integer.parseInt(args[2]);
+		
 		
 		//prepare detectors
 		List<PrivatelyDifferentStateDetectorInterface> privatelyDifferentStateDetectors = new LinkedList<>();
 		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector(assumptions));
-		privatelyDifferentStateDetectors.add(new EqualPrivatePartsPrivatelyDifferentDetector());
+		privatelyDifferentStateDetectors.add(new EqualPrivatePartsPrivatelyDifferentDetector(analyzedAgentID));
 		
 		List<OnlinePropertyDetectorInterface> onlinePropertyDetectors = new LinkedList<>();
 		onlinePropertyDetectors.add(new PrivatelyDependentDetector());
@@ -100,13 +102,12 @@ public class PrivacyAnalysisOffline {
 		List<OfflinePropertyDetectorInterface> offlinePropertyDetectors = new LinkedList<>();
 		offlinePropertyDetectors.add(new NotInitApplicableDetector());
 		offlinePropertyDetectors.add(new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors));
-		offlinePropertyDetectors.add(new PrivatelyNondeterministicDetector(privatelyDifferentStateDetectors));
+		offlinePropertyDetectors.add(new PrivatelyNondeterministicDetector(privatelyDifferentStateDetectors,assumptions));
 		
 		//prepare the result structure
 		Result result = new Result(args);
 		
 		//prepare the search tree structure
-		int analyzedAgentID = Integer.parseInt(args[2]);
 		
 		final SearchTree tree = new SearchTree(analyzedAgentID);
 		final Algorithm algorithm = new Algorithm(
@@ -240,6 +241,7 @@ public class PrivacyAnalysisOffline {
 		}
 		
 		System.out.println("-----");
+		
 		
 		System.out.println(result);
 		
