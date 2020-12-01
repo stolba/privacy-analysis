@@ -56,28 +56,32 @@ public class PrivacyAnalysisOffline {
 		
 		
 		//set up assumptions
-		EnumSet<EnumAlgorithmAssumptions> assumptions;
+		EnumSet<EnumAlgorithmAssumptions> assumptionsWork;
 		
 		if(args[3].equals("proj")){
 			if(args[5].equals("send-create")){
-				assumptions = EnumSet.of(
+				assumptionsWork = EnumSet.of(
 						EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC,
 						EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
 						);
 			}else{
-				assumptions = EnumSet.of(
+				assumptionsWork = EnumSet.of(
 						EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC
 						);
 			}
 		}else{
 			if(args[5].equals("send-create")){
-				assumptions = EnumSet.of(
+				assumptionsWork = EnumSet.of(
 						EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
 						);
 			}else{
-				assumptions = EnumSet.noneOf(EnumAlgorithmAssumptions.class);
+				assumptionsWork = EnumSet.noneOf(EnumAlgorithmAssumptions.class);
 			}
 		}
+		
+		assumptionsWork.add(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS);
+		
+		final EnumSet<EnumAlgorithmAssumptions> assumptions = assumptionsWork;
 		
 		System.out.println("Start analysis...");
 		
@@ -164,6 +168,9 @@ public class PrivacyAnalysisOffline {
 				
 				@Override
 				public void addOperator(Operator op) {
+					if(op.isPrivate){
+						assumptions.remove(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS);
+					}
 					tree.addOperator(op);
 					
 				}

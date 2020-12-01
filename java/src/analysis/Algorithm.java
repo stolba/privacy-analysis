@@ -74,19 +74,38 @@ public class Algorithm{
 		if(state.senderID == analyzedAgentID){
 			
 			if(PrivacyAnalysisOffline.VERBOSE) System.out.println("Algorithm processing state: "+state);
+//			System.out.println("Algorithm processing state: "+state);
 			
 			//detect whether all successors of the current i-parent were received
-			if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION)){
+			if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION) && assumptions.contains(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS)){
 				
 				SearchState previousReceivedState = tree.getPreviousReceivedState(state.senderID);
 				
 				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("previous received state: " + previousReceivedState);
 				if(PrivacyAnalysisOffline.VERBOSE) System.out.println("state: " + state);
 				
-				if(previousReceivedState !=null && previousReceivedState.iparentID != state.iparentID){
+
+				
+				
+//				System.out.println("state: " + state.stateID);
+//				System.out.println("state.iparentID: " + state.iparentID);
+//				
+				
+				if(previousReceivedState !=null){
+//					System.out.println("previous received state: " + previousReceivedState.stateID);
+//					System.out.println("previousReceivedState.iparentID: " + previousReceivedState.iparentID);
+//					
+					if(PrivacyAnalysisOffline.VERBOSE) System.out.println(state.senderID +": " +previousReceivedState.iparentID + "->" + previousReceivedState.stateID + "," +state.iparentID + "->" + state.stateID);
+					
+				}
+				
+				//&& previousReceivedState.iparentID != -1 && state.iparentID != -1
+				if(previousReceivedState !=null && previousReceivedState.senderID == state.senderID && previousReceivedState.iparentID != state.iparentID){
 					SearchState stateWithAllSuccessorsReceived = tree.getSentStateMap().get(previousReceivedState.iparentID);
 					if(stateWithAllSuccessorsReceived != null){
 						stateWithAllSuccessorsReceived.allSuccessorsReceived = true;
+						
+						if(PrivacyAnalysisOffline.VERBOSE) System.out.println("stateWithAllSuccessorsReceived: " + stateWithAllSuccessorsReceived.stateID);
 					}
 				}
 			}
