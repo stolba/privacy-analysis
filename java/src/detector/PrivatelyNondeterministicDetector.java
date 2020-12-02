@@ -34,22 +34,21 @@ public class PrivatelyNondeterministicDetector implements
 		
 		Set<OperatorSet> result =  new HashSet<OperatorSet>();
 		
-		//IS this true? Or is it just that we cannot detect that?
-//		if(!assumptions.contains(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS)) return result;
 		
 		for(SearchState state : tree.getSentStates()){
 			for(SearchState s1 : state.successors){
 				for(SearchState s2 : state.successors){
 					
 					if(s1.publiclyEquivalent(s2) && s1.privatelyDifferent(s2, privatelyDifferentStateDetectors)){
-						OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC,true);
-						
-						opSet.addAll(s1.responsibleOperators);
-						opSet.retainAll(s2.responsibleOperators);
-						
-						if(!opSet.isEmpty()){
-							result.add(opSet);
+						//We are sure about po action only if there is no other explatation, e.g. that s1 results from action a and s2 results from action b
+						if(s1.responsibleOperators.size() == 1 && s2.responsibleOperators.size() == 1){
+							if(s1.responsibleOperators.containsAll(s2.responsibleOperators)){
+								OperatorSet opSet = new OperatorSet(EnumPrivacyProperty.PRIVATELY_NONDETERMINISTIC,true);
+								opSet.addAll(s1.responsibleOperators);
+								result.add(opSet);
+							}
 						}
+						
 					}
 					
 				}
@@ -71,6 +70,10 @@ public class PrivatelyNondeterministicDetector implements
 	
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
+		
+		//it is not so easy when there are private actions
+		if(!assumptions.contains(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS)) return true;
+		
 		//find a private variable for which there is more than one effect value 
 		//or more then one private variable in the effect
 		int numOfDistinctPrivateVarEffects = 0;
