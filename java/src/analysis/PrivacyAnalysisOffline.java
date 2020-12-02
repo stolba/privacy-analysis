@@ -32,6 +32,8 @@ import detector.ProjectedHeuristicPrivatelyDifferentDetector;
 public class PrivacyAnalysisOffline {
 	
 	public static final boolean VERBOSE = false;
+	
+	
 
 	/**
 	 * 
@@ -178,6 +180,10 @@ public class PrivacyAnalysisOffline {
 			});
 		}
 		
+		result.setEvaluatedStates(tree.processedStates);
+		result.setPublicActions(tree.publicActions);
+		result.setUniquePublicActions(tree.publiclyUniqueActions);
+		
 		System.out.println("-----");
 		
 		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
@@ -199,6 +205,10 @@ public class PrivacyAnalysisOffline {
 		validator.addOfflinePropertyDetectors(offlinePropertyDetectors);
 		
 		reader.readJSONFileOffline(traceDirectory+"/"+"agent"+analyzedAgentID+".json",validator);
+		
+
+		result.setPrivateActions(validator.privateActions);
+		
 		
 		System.out.println("validate...");
 		boolean validAll = true;

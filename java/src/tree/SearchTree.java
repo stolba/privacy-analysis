@@ -20,6 +20,11 @@ public class SearchTree{
 	private Map<Integer,SearchState> previousReceivedState = new HashMap<>();
 	private SearchState initState = null;
 	
+	//stats
+	public int publicActions=0;
+	public int publiclyUniqueActions=0;
+	public int processedStates=0;
+	
 	
 	
 	public SearchTree(int analyzedAgentID) {
@@ -41,7 +46,9 @@ public class SearchTree{
 		// We are interested in projected operators of analyzedAgentID
 		if(analyzedAgentID != op.ownerID) return;
 		
-		if(op.isPrivate) return;
+		if(op.isPrivate){
+			return;
+		}
 		
 		if(op.pre == null) op.pre = new HashMap<>();
 		if(op.eff == null) op.eff = new HashMap<>();
@@ -56,9 +63,12 @@ public class SearchTree{
 			
 			System.out.println("op " + op.opName + ", owner="+op.ownerID + " added to op " + existingOp.opName + " with preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask)+ ", op count " + existingOp.getOriginalOps().size());
 			
+			publicActions++;
 		}else{
 			opMap.put(op.hash, op);
 			System.out.println("op " + op.opName + ", owner="+op.ownerID + " created with preMask="+Arrays.toString(op.publicPreMask)+ ",effMask="+Arrays.toString(op.publicEffMask));
+			
+			publiclyUniqueActions++;
 		}
 		
 		
@@ -97,6 +107,8 @@ public class SearchTree{
 			
 			
 		}
+		
+		processedStates++;
 	}
 	
 	public void setPreviousReceivedState(SearchState state) {

@@ -35,6 +35,9 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	
 	private SearchState initState = null;
 	
+
+	public int privateActions=0;
+	
 	
 	public OperatorPropertyValidator(int analyzedAgentID){
 		this.analyzedAgentID = analyzedAgentID;
@@ -68,6 +71,7 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 				if(!atLeastOneOriginalOpValid){
 					System.out.println("WARN: operator "+op + " has the property " + property + ", but it should not be the case according to the ground truth!");
 					valid = false;
+					ops.setInvalid();
 				}
 			} 
 		}
@@ -88,6 +92,11 @@ public class OperatorPropertyValidator implements SearchTraceInputInterface{
 	
 	@Override
 	public void addOperator(Operator op) {
+		
+		if(op.isPrivate){
+			privateActions++;
+		}
+		
 		if(analyzedAgentID != op.ownerID) return;
 		
 		op.generatePublicLabelAndHash();

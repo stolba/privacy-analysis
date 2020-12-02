@@ -18,7 +18,14 @@ public class Result {
 	final String whichStates;
 	final String whenSending;
 	
+	//problem statistics
+	int publicActions = 0;
+	int uniquePublicActions = 0;
+	int privateActions= 0;
+	
+	//evaluation statistics
 	boolean valid = false;
+	int evaluatedStates = 0;
 	
 	EnumMap<EnumPrivacyProperty,Integer> groundTruth = new EnumMap<>(EnumPrivacyProperty.class);
 	EnumMap<EnumPrivacyProperty,Integer> resultValues = new EnumMap<>(EnumPrivacyProperty.class);
@@ -63,8 +70,29 @@ public class Result {
 	}
 	
 	
+	
+	
+	public void setPublicActions(int totalActions) {
+		this.publicActions = totalActions;
+	}
+	
+	public void setUniquePublicActions(int totalActions) {
+		this.uniquePublicActions = totalActions;
+	}
+
+
+	public void setPrivateActions(int privateActions) {
+		this.privateActions = privateActions;
+	}
+
+
+	public void setEvaluatedStates(int evaluatedStates) {
+		this.evaluatedStates = evaluatedStates;
+	}
+
+
 	public String toString(){
-		String result = header + "," +traceDir + "," +agentID + "," +heuristic + "," +whichStates + "," +whenSending + "," + valid + ",";
+		String result = header + "," +traceDir + "," +agentID + "," +heuristic + "," +whichStates + "," +whenSending + "," + publicActions + "," + uniquePublicActions+ "," +privateActions + "," +evaluatedStates + "," + valid + ",";
 		
 		int i = 0;
 		for(EnumPrivacyProperty prop : EnumPrivacyProperty.values()){
