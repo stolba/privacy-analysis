@@ -56,6 +56,12 @@ public class LPPropertiecComputation {
 	
 	public Set<String> computeLP(){
 		LPSolution solution = solver.solveLP(LP);
+		
+		if(solution == null){
+			System.out.println("LP solution not found!");
+			return new HashSet<>();
+		}
+		
 		System.out.println("LP solution satus: " + solution.getSolutionStatus());
 		System.out.println("LP solution value: " + solution.getObjctiveValue());
 		

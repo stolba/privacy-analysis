@@ -103,7 +103,7 @@ public class PrivacyAnalysisOffline {
 		
 		List<OfflinePropertyDetectorInterface> offlinePropertyDetectors = new LinkedList<>();
 		offlinePropertyDetectors.add(new NotInitApplicableDetector());
-		offlinePropertyDetectors.add(new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors));
+//		offlinePropertyDetectors.add(new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors));
 		offlinePropertyDetectors.add(new PrivatelyNondeterministicDetector(privatelyDifferentStateDetectors,assumptions));
 		
 		//prepare the result structure
