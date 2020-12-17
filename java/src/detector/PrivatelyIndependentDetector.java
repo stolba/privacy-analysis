@@ -68,27 +68,27 @@ public class PrivatelyIndependentDetector implements OnlinePropertyDetectorInter
 	@Override
 	public boolean isGroundTruthProperty(Operator op, Set<String> privateVarIDs, SearchState initState) {
 		//find a private variable for which there is none or more than one precondition value 
+		Set<String> opValues = new HashSet<>();
+		
 		for(String var : privateVarIDs){
-			Set<Integer> opValues = new HashSet<>();
 			
 			for(Operator origOp : op.getOriginalOps()){
 				if(origOp.pre.containsKey(var)){
-					opValues.add(origOp.pre.get(var));
-				}else{
-					//origOp does not have var in precondition - it is pi in var
-//					System.out.println("GT op " + op.opName + " is privately-independent in " + var);
-					return true;
+					opValues.add(var + "-"+origOp.pre.get(var));
 				}
 			}
 			
-			if(opValues.size() != 1 ){
-				//op has multiple precondition values for var
-//				System.out.println("GT op " + op.opName + " is privately-independent in " + var);
-				return true;
-			}
+			
 			
 		}
-		return false;
+
+		if(opValues.size() != 1 ){
+			//op has multiple precondition values for var
+//			System.out.println("GT op " + op.opName + " is privately-independent in " + var);
+			return true;
+		}else{
+			return false;
+		}
 		
 	}
 

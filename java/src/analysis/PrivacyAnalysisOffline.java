@@ -28,6 +28,7 @@ import detector.PrivatelyDifferentStateDetectorInterface;
 import detector.PrivatelyIndependentDetector;
 import detector.PrivatelyNondeterministicDetector;
 import detector.ProjectedHeuristicPrivatelyDifferentDetector;
+import detector.SuccessorsPrivatelyDifferentDetector;
 
 public class PrivacyAnalysisOffline {
 	
@@ -58,32 +59,27 @@ public class PrivacyAnalysisOffline {
 		
 		
 		//set up assumptions
-		EnumSet<EnumAlgorithmAssumptions> assumptionsWork;
+		EnumSet<EnumAlgorithmAssumptions> assumptionsWork = EnumSet.noneOf(EnumAlgorithmAssumptions.class);
 		
 		if(args[3].equals("proj")){
-			if(args[5].equals("send-create")){
-				assumptionsWork = EnumSet.of(
-						EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC,
-						EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
-						);
-			}else{
-				assumptionsWork = EnumSet.of(
-						EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC
-						);
-			}
-		}else{
-			if(args[5].equals("send-create")){
-				assumptionsWork = EnumSet.of(
-						EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION
-						);
-			}else{
-				assumptionsWork = EnumSet.noneOf(EnumAlgorithmAssumptions.class);
-			}
+			assumptionsWork.add(EnumAlgorithmAssumptions.ASSUME_PROJECTED_HEURISTIC);
 		}
 		
+		if(args[4].equals("states-all")){
+			assumptionsWork.add(EnumAlgorithmAssumptions.ASSUME_ALL_STATES_SENT);
+			
+		}
+		
+		if(args[5].equals("send-create")){
+			assumptionsWork.add(EnumAlgorithmAssumptions.ASSUME_STATES_SENT_AFTER_EXPANSION);
+			
+		}
+			
 		assumptionsWork.add(EnumAlgorithmAssumptions.ASSUME_NO_PRIVATE_ACTIONS);
 		
 		final EnumSet<EnumAlgorithmAssumptions> assumptions = assumptionsWork;
+		
+		//start analysis
 		
 		System.out.println("Start analysis...");
 		
@@ -96,13 +92,23 @@ public class PrivacyAnalysisOffline {
 		privatelyDifferentStateDetectors.add(new ProjectedHeuristicPrivatelyDifferentDetector(assumptions));
 		privatelyDifferentStateDetectors.add(new EqualPrivatePartsPrivatelyDifferentDetector(analyzedAgentID));
 		
+		if(!args[4].equals("states-macro")){
+			privatelyDifferentStateDetectors.add(new SuccessorsPrivatelyDifferentDetector(assumptions));
+		}
+		
 		List<OnlinePropertyDetectorInterface> onlinePropertyDetectors = new LinkedList<>();
-		onlinePropertyDetectors.add(new PrivatelyDependentDetector());
+		if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_ALL_STATES_SENT)){
+			onlinePropertyDetectors.add(new PrivatelyDependentDetector());
+		}
 		onlinePropertyDetectors.add(new InitApplicableDetector());
 		onlinePropertyDetectors.add(new PrivatelyIndependentDetector(privatelyDifferentStateDetectors));
 		
 		List<OfflinePropertyDetectorInterface> offlinePropertyDetectors = new LinkedList<>();
-		offlinePropertyDetectors.add(new NotInitApplicableDetector());
+		if(assumptions.contains(EnumAlgorithmAssumptions.ASSUME_ALL_STATES_SENT)){
+			offlinePropertyDetectors.add(new NotInitApplicableDetector());
+		}
+		
+		//we cannot detect this
 //		offlinePropertyDetectors.add(new PrivatelyDeterministicDetector(privatelyDifferentStateDetectors));
 		offlinePropertyDetectors.add(new PrivatelyNondeterministicDetector(privatelyDifferentStateDetectors,assumptions));
 		
