@@ -29,7 +29,7 @@ public class EqualPrivatePartsPrivatelyDifferentDetector implements
 			if(s1.privateIDs[i] != s2.privateIDs[i]) return false;
 		}
 		
-		if(s1.heuristic != s2.heuristic || s1.cost != s2.cost){
+		if(s1.heuristic != s2.heuristic){
 			return true;
 		}else{
 			return false;
