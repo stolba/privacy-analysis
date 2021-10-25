@@ -40,7 +40,7 @@ public class LPPropertiecComputation {
 				++opCount;
 			}
 			
-			LP += " = 1\n";
+			LP += " >= 1\n";
 		}
 		
 		LP += "\nBinary\n";
